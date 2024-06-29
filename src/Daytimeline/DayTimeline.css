@@ -1,0 +1,55 @@
+.day-timeline-container {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: Arial, sans-serif;
+
+    .timeline-item {
+        user-select: none;
+        border-bottom: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+
+    .day-timeline-new-period {
+        position: absolute;
+        width: 95%;
+        border: 1px solid black;
+        background-color: #ccc;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        border-radius: 2px;
+
+
+        .resize-top,
+        .resize-bottom {
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            cursor: ns-resize;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 50%;
+                height: 8px;
+                width: 8px;
+                background-color: #fff;
+                border: 2px solid orange;
+                border-radius: 50%;
+                cursor: ns-resize;
+            }
+        }
+
+        .resize-top {
+            top: 0;
+            transform: translateY(-50%);
+        }
+
+        .resize-bottom {
+            bottom: 0;
+            transform: translateY(50%);
+        }
+    }
+}

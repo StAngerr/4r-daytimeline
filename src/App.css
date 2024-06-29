@@ -1,0 +1,19 @@
+.test-container {
+    width: 450px;
+    padding: 10px;
+    margin: 0 auto;
+    height: 100%;
+
+     * {
+         user-select: none;
+     }
+
+    .day-timeline-container {
+        user-select: none;
+        font-family: Arial, sans-serif;
+
+        .timeline-item {
+            user-select: none;
+        }
+    }
+}
