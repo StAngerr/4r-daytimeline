@@ -5,7 +5,7 @@ import { DayTimeline } from './Daytimeline/DayTimeline.tsx';
 function App() {
     return (
         <div className={'test-container'}>
-            <DayTimeline />
+            <DayTimeline timeslotHeight={55} />
         </div>
     );
 }

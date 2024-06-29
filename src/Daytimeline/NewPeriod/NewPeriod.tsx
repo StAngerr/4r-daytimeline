@@ -1,9 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 
 type DragDirection = 'top' | 'bottom';
-const STEP = 60;
 
-export const NewPeriod = ({ onResize }) => {
+interface Props {
+    timeslotHeight: number;
+    onResize: (e: DragDirection) => void;
+}
+
+export const NewPeriod = ({ onResize, timeslotHeight: STEP }: Props) => {
     const isResizing = useRef(false);
     const divRef = useRef<HTMLDivElement | null>(null);
     const moveState = useRef<{

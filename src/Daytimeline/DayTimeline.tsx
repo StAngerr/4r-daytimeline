@@ -6,10 +6,11 @@ import {
 import { hours } from './DayTimeline.constants.ts';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { NewPeriod } from './NewPeriod/NewPeriod.tsx';
+import { toTimeLabel } from './utils.ts';
 
 interface Props {
-    onChange?: (selected: Period) => void;
     defaultSelected?: Period;
+    onChange?: (selected: Period) => void;
     periods?: Period[];
     businessHours?:
         | boolean
@@ -50,15 +51,15 @@ export const DayTimeline = ({
             return half ? (
                 [
                     <div {...baseProps} key={i}>
-                        {i}
+                        {toTimeLabel(i)}
                     </div>,
                     <div {...baseProps} key={i + 0.5}>
-                        {i + 0.5}
+                        {toTimeLabel(i + 0.5)}
                     </div>,
                 ]
             ) : (
                 <div {...baseProps} key={i}>
-                    {i}
+                    {toTimeLabel(i)}
                 </div>
             );
         });
@@ -76,7 +77,10 @@ export const DayTimeline = ({
     return (
         <div ref={divContainer} className={classes}>
             {renderRange}
-            <NewPeriod onResize={(...args) => console.log(...args)} />
+            <NewPeriod
+                timeslotHeight={timeslotHeight}
+                onResize={(...args) => console.log(...args)}
+            />
         </div>
     );
 };
