@@ -1,16 +1,27 @@
 import {
     CurrentTimeSettings,
     Period,
+    PeriodValues,
     TimeLabelsSettings,
 } from './DayTimeline.types.ts';
 import { hours } from './DayTimeline.constants.ts';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { NewPeriod } from './NewPeriod/NewPeriod.tsx';
-import { toTimeLabel } from './utils.ts';
+import {
+    parseDefaultPeriod,
+    timeValuesToDatePeriod,
+    toTimeLabel,
+} from './utils.ts';
 
 interface Props {
-    defaultSelected?: Period;
-    onChange?: (selected: Period) => void;
+    defaultSelected?: Period | [number, number] | [string, string];
+    onChange: (selected: Period) => void;
     periods?: Period[];
     businessHours?:
         | boolean
@@ -23,14 +34,18 @@ interface Props {
     className?: string;
     interval?: 30 | 60;
 }
-
 const TIMESLOT_HEIGHT_VAR_NAME = '--timeslot-height';
 
 export const DayTimeline = ({
+    defaultSelected,
+    onChange,
     className,
     interval = 30,
     timeslotHeight = 60,
 }: Props) => {
+    const [selected] = useState<PeriodValues | null>(
+        parseDefaultPeriod(defaultSelected, interval),
+    );
     const divContainer = useRef<HTMLDivElement | null>(null);
     const classes = useMemo(
         () => 'day-timeline-container' + (className ? ` ${className}` : ''),
@@ -65,6 +80,13 @@ export const DayTimeline = ({
         });
     }, [interval, timeslotHeight]);
 
+    const handlePeriodChange = useCallback(
+        (period: PeriodValues) => {
+            onChange(timeValuesToDatePeriod(period));
+        },
+        [onChange],
+    );
+
     useEffect(() => {
         if (divContainer.current && timeslotHeight) {
             divContainer.current.style.setProperty(
@@ -77,10 +99,14 @@ export const DayTimeline = ({
     return (
         <div ref={divContainer} className={classes}>
             {renderRange}
-            <NewPeriod
-                timeslotHeight={timeslotHeight}
-                onResize={(...args) => console.log(...args)}
-            />
+            {selected && (
+                <NewPeriod
+                    interval={interval}
+                    selected={selected}
+                    timeslotHeight={timeslotHeight}
+                    onChange={handlePeriodChange}
+                />
+            )}
         </div>
     );
 };

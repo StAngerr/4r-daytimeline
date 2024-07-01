@@ -1,15 +1,32 @@
-import React, { useRef, useEffect } from 'react';
-
-type DragDirection = 'top' | 'bottom';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import { timeValueToBottomPosition, timeValueToTopPosition } from '../utils.ts';
+import { DragDirection, PeriodValues } from '../DayTimeline.types.ts';
 
 interface Props {
     timeslotHeight: number;
-    onResize: (e: DragDirection) => void;
+    interval: number;
+    selected: { start: number; end: number };
+    onChange?: (newPeriod: PeriodValues) => void;
 }
 
-export const NewPeriod = ({ onResize, timeslotHeight: STEP }: Props) => {
+export const NewPeriod = ({
+    onChange,
+    interval,
+    timeslotHeight: STEP,
+    selected: defaultPeriod,
+}: Props) => {
+    const [selected, setSelectedPeriod] = useState<PeriodValues>(defaultPeriod);
+    const [defaultPosition] = useState({
+        top:
+            timeValueToTopPosition(defaultPeriod?.start, STEP, interval) ||
+            'none',
+        bottom:
+            timeValueToBottomPosition(defaultPeriod?.end, STEP, interval) ||
+            'none',
+    });
     const isResizing = useRef(false);
     const divRef = useRef<HTMLDivElement | null>(null);
+    const isFirstRender = useRef(true);
     const moveState = useRef<{
         side: DragDirection;
     } | null>(null);
@@ -21,49 +38,71 @@ export const NewPeriod = ({ onResize, timeslotHeight: STEP }: Props) => {
         };
     };
 
-    const doResize = (clientY: number, toTopDirection: boolean) => {
-        if (!divRef.current) return;
+    const intervalValue = useMemo(() => interval / 60, [interval]);
 
-        if (moveState.current!.side === 'top') {
-            const divElement = divRef.current;
-            const currentTop = parseFloat(divElement.style.top);
-            const { top, bottom } = divElement.getBoundingClientRect();
+    //TODO think of splitting this function into smaller
+    const doResize = useCallback(
+        (clientY: number, toTopDirection: boolean) => {
+            if (!divRef.current) return;
 
-            // upper part drag to top
-            if (toTopDirection && clientY < top && currentTop - STEP >= 0) {
-                divElement.style.top = currentTop - STEP + 'px';
-            }
-            // upper part drag to bottom
-            else if (
-                !toTopDirection &&
-                clientY > top + STEP &&
-                top + STEP < bottom
-            ) {
-                divElement.style.top = currentTop + STEP + 'px';
-            }
-        } else if (moveState.current!.side === 'bottom') {
-            const divElement = divRef.current;
-            const currentBottom = parseFloat(divElement.style.bottom);
-            const { bottom, top } = divElement.getBoundingClientRect();
+            if (moveState.current!.side === 'top') {
+                const divElement = divRef.current;
+                const currentTop = parseFloat(divElement.style.top);
+                const { top, bottom } = divElement.getBoundingClientRect();
 
-            // bottom part drag to
-            if (
-                !toTopDirection &&
-                clientY > bottom &&
-                currentBottom - STEP >= 0
-            ) {
-                divElement.style.bottom = currentBottom - STEP + 'px';
+                // upper part drag to top
+                if (toTopDirection && clientY < top && currentTop - STEP >= 0) {
+                    divElement.style.top = currentTop - STEP + 'px';
+                    setSelectedPeriod((prev: PeriodValues) => ({
+                        ...prev,
+                        start: prev.start - intervalValue,
+                    }));
+                }
+                // upper part drag to bottom
+                else if (
+                    !toTopDirection &&
+                    clientY > top + STEP &&
+                    top + STEP < bottom
+                ) {
+                    divElement.style.top = currentTop + STEP + 'px';
+                    setSelectedPeriod((prev) => ({
+                        ...prev,
+                        start: prev.start + intervalValue,
+                    }));
+                }
+            } else if (moveState.current!.side === 'bottom') {
+                const divElement = divRef.current;
+                const currentBottom = parseFloat(divElement.style.bottom);
+                const { bottom, top } = divElement.getBoundingClientRect();
+
+                // bottom part drag to bottom
+                if (
+                    !toTopDirection &&
+                    clientY > bottom &&
+                    currentBottom - STEP >= 0
+                ) {
+                    divElement.style.bottom = currentBottom - STEP + 'px';
+                    setSelectedPeriod((prev) => ({
+                        ...prev,
+                        end: prev.end + intervalValue,
+                    }));
+                }
+                // bottom part drag to top
+                else if (
+                    toTopDirection &&
+                    clientY < bottom &&
+                    bottom - STEP > top
+                ) {
+                    divElement.style.bottom = currentBottom + STEP + 'px';
+                    setSelectedPeriod((prev: PeriodValues) => ({
+                        ...prev,
+                        end: prev.end - intervalValue,
+                    }));
+                }
             }
-            // bottom part drag to top
-            else if (
-                toTopDirection &&
-                clientY < bottom &&
-                bottom - STEP > top
-            ) {
-                divElement.style.bottom = currentBottom + STEP + 'px';
-            }
-        }
-    };
+        },
+        [STEP, intervalValue],
+    );
 
     const stopResize = () => {
         isResizing.current = false;
@@ -99,28 +138,29 @@ export const NewPeriod = ({ onResize, timeslotHeight: STEP }: Props) => {
         };
     }, []);
 
+    useEffect(() => {
+        if (!isFirstRender.current) onChange && selected && onChange(selected);
+        else isFirstRender.current = false;
+    }, [onChange, selected]);
+
     return (
-        <div
-            ref={divRef}
-            style={{
-                top: 10 * STEP + 'px',
-                bottom: 37 * STEP + 'px',
-            }}
-            className={'day-timeline-new-period'}
-        >
+        <>
             <div
-                className={'resize-top'}
-                onMouseUp={stopResize}
-                onMouseDown={(e) => {
-                    console.log(e);
-                    startResize('top');
-                }}
-            ></div>
-            <div
-                className={'resize-bottom'}
-                onMouseUp={stopResize}
-                onMouseDown={() => startResize('bottom')}
-            ></div>
-        </div>
+                ref={divRef}
+                style={defaultPosition}
+                className={'day-timeline-new-period'}
+            >
+                <div
+                    className={'resize-top'}
+                    onMouseUp={stopResize}
+                    onMouseDown={() => startResize('top')}
+                ></div>
+                <div
+                    className={'resize-bottom'}
+                    onMouseUp={stopResize}
+                    onMouseDown={() => startResize('bottom')}
+                ></div>
+            </div>
+        </>
     );
 };
