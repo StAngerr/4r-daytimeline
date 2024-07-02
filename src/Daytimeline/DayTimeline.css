@@ -6,9 +6,30 @@
     font-family: Arial, sans-serif;
 
     .timeline-item {
+        position: relative;
         user-select: none;
         border-bottom: 1px solid #ccc;
         box-sizing: border-box;
+        cursor: pointer;
+
+        &:nth-child(2n) {
+            border-bottom: 1px dotted #ccc;
+        }
+
+        &:hover {
+            background-color: #f4f1f1;
+        }
+
+        .time-label {
+            position: absolute;
+            transform: translateX(-100%) translateY(-50%);
+            /*top: 50%;*/
+
+            &.right {
+                transform: translateX(100%) translateY(-50%);
+                right: 0;
+            }
+        }
     }
 
     .day-timeline-new-period {

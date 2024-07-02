@@ -1,35 +1,53 @@
-import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import React, {
+    useRef,
+    useEffect,
+    useState,
+    useCallback,
+    useMemo,
+} from 'react';
 import { timeValueToBottomPosition, timeValueToTopPosition } from '../utils.ts';
-import { DragDirection, PeriodValues } from '../DayTimeline.types.ts';
+import {
+    BusinessHoursPeriod,
+    DragDirection,
+    PeriodValues,
+} from '../DayTimeline.types.ts';
 
 interface Props {
     timeslotHeight: number;
     interval: number;
+    selectedComponent?: React.FunctionComponent;
+    startEndHours: BusinessHoursPeriod;
     selected: { start: number; end: number };
-    onChange?: (newPeriod: PeriodValues) => void;
+    onChange: (newPeriod: PeriodValues) => void;
 }
 
 export const NewPeriod = ({
     onChange,
     interval,
+    startEndHours,
+    selectedComponent,
     timeslotHeight: STEP,
-    selected: defaultPeriod,
+    selected,
 }: Props) => {
-    const [selected, setSelectedPeriod] = useState<PeriodValues>(defaultPeriod);
-    const [defaultPosition] = useState({
-        top:
-            timeValueToTopPosition(defaultPeriod?.start, STEP, interval) ||
-            'none',
-        bottom:
-            timeValueToBottomPosition(defaultPeriod?.end, STEP, interval) ||
-            'none',
+    const [placement, setPlacement] = useState({
+        top: timeValueToTopPosition(
+            selected.start - startEndHours.start,
+            STEP,
+            interval,
+        ),
+        bottom: timeValueToBottomPosition(
+            startEndHours.end - selected?.end,
+            STEP,
+            interval,
+        ),
     });
     const isResizing = useRef(false);
     const divRef = useRef<HTMLDivElement | null>(null);
-    const isFirstRender = useRef(true);
     const moveState = useRef<{
         side: DragDirection;
     } | null>(null);
+    const doResizeCb =
+        useRef<(clientY: number, toTopDirection: boolean) => void>();
 
     const startResize = (direction: DragDirection) => {
         isResizing.current = true;
@@ -52,11 +70,11 @@ export const NewPeriod = ({
 
                 // upper part drag to top
                 if (toTopDirection && clientY < top && currentTop - STEP >= 0) {
-                    divElement.style.top = currentTop - STEP + 'px';
-                    setSelectedPeriod((prev: PeriodValues) => ({
-                        ...prev,
-                        start: prev.start - intervalValue,
-                    }));
+                    //divElement.style.top = currentTop - STEP + 'px';
+                    onChange({
+                        ...selected,
+                        start: selected.start - intervalValue,
+                    });
                 }
                 // upper part drag to bottom
                 else if (
@@ -64,11 +82,11 @@ export const NewPeriod = ({
                     clientY > top + STEP &&
                     top + STEP < bottom
                 ) {
-                    divElement.style.top = currentTop + STEP + 'px';
-                    setSelectedPeriod((prev) => ({
-                        ...prev,
-                        start: prev.start + intervalValue,
-                    }));
+                    //divElement.style.top = currentTop + STEP + 'px';
+                    onChange({
+                        ...selected,
+                        start: selected.start + intervalValue,
+                    });
                 }
             } else if (moveState.current!.side === 'bottom') {
                 const divElement = divRef.current;
@@ -81,11 +99,11 @@ export const NewPeriod = ({
                     clientY > bottom &&
                     currentBottom - STEP >= 0
                 ) {
-                    divElement.style.bottom = currentBottom - STEP + 'px';
-                    setSelectedPeriod((prev) => ({
-                        ...prev,
-                        end: prev.end + intervalValue,
-                    }));
+                    //divElement.style.bottom = currentBottom - STEP + 'px';
+                    onChange({
+                        ...selected,
+                        end: selected.end + intervalValue,
+                    });
                 }
                 // bottom part drag to top
                 else if (
@@ -93,20 +111,24 @@ export const NewPeriod = ({
                     clientY < bottom &&
                     bottom - STEP > top
                 ) {
-                    divElement.style.bottom = currentBottom + STEP + 'px';
-                    setSelectedPeriod((prev: PeriodValues) => ({
-                        ...prev,
-                        end: prev.end - intervalValue,
-                    }));
+                    //divElement.style.bottom = currentBottom + STEP + 'px';
+                    onChange({
+                        ...selected,
+                        end: selected.end - intervalValue,
+                    });
                 }
             }
         },
-        [STEP, intervalValue],
+        [STEP, intervalValue, selected],
     );
 
     const stopResize = () => {
         isResizing.current = false;
     };
+
+    useEffect(() => {
+        doResizeCb.current = doResize;
+    }, [doResize]);
 
     useEffect(() => {
         const handleMouseMove = () => {
@@ -117,7 +139,7 @@ export const NewPeriod = ({
                 if (isResizing.current) {
                     const newDirection =
                         e.clientY === prev ? prevDirection : e.clientY <= prev;
-                    doResize(e.clientY, newDirection);
+                    doResizeCb.current!(e.clientY, newDirection);
                     prev = e.clientY;
                     prevDirection = newDirection;
                 } else if (prev !== 0) {
@@ -139,15 +161,27 @@ export const NewPeriod = ({
     }, []);
 
     useEffect(() => {
-        if (!isFirstRender.current) onChange && selected && onChange(selected);
-        else isFirstRender.current = false;
-    }, [onChange, selected]);
+        if (selected) {
+            setPlacement({
+                top: timeValueToTopPosition(
+                    selected?.start - startEndHours.start,
+                    STEP,
+                    interval,
+                ),
+                bottom: timeValueToBottomPosition(
+                    startEndHours.end - selected?.end,
+                    STEP,
+                    interval,
+                ),
+            });
+        }
+    }, [selected, STEP, interval, startEndHours]);
 
     return (
         <>
             <div
                 ref={divRef}
-                style={defaultPosition}
+                style={placement}
                 className={'day-timeline-new-period'}
             >
                 <div
@@ -155,6 +189,7 @@ export const NewPeriod = ({
                     onMouseUp={stopResize}
                     onMouseDown={() => startResize('top')}
                 ></div>
+                {selectedComponent && selectedComponent(selected)}
                 <div
                     className={'resize-bottom'}
                     onMouseUp={stopResize}

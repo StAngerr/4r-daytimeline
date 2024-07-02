@@ -1,4 +1,5 @@
 import React from 'react';
+import { hours } from './DayTimeline.constants.ts';
 
 export interface Period {
     start: Date;
@@ -14,7 +15,7 @@ export interface CurrentTimeSettings {
 }
 
 export interface TimeLabelsSettings {
-    component?: React.Component;
+    component?: React.FunctionComponent;
     position?: 'left' | 'right';
 }
 
@@ -24,3 +25,8 @@ export interface PeriodValues {
 }
 
 export type DragDirection = 'top' | 'bottom';
+
+export interface BusinessHoursPeriod {
+    start: (typeof hours)[number];
+    end: (typeof hours)[number];
+}

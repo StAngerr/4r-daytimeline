@@ -1,4 +1,9 @@
 import { Period, PeriodValues } from './DayTimeline.types.ts';
+import {
+    DEFAULT_BUSINESS_END_HOUR,
+    DEFAULT_BUSINESS_START_HOUR,
+    hours,
+} from './DayTimeline.constants.ts';
 
 const hoursLeadingZero = (val: number) => (val < 10 ? '0' + val : val);
 
@@ -32,8 +37,8 @@ export const timeValueToBottomPosition = (
     val: number,
     itemHeight: number,
     interval: number,
-    // 24 hours - end value
-) => `${(24 - val) * (60 / interval) * itemHeight}px`;
+    // 24 hours - end value TODO added +1 itemHeight to not include period for example if period 9 -9.5 it should take exactyly one timeslot
+) => `${val * (60 / interval) * itemHeight}px`;
 
 export const isValidNumberTuple = (
     input: [unknown, unknown],
@@ -129,4 +134,40 @@ export const timeValuesToDatePeriod = (period: PeriodValues) => {
         start,
         end,
     };
+};
+
+export const getHourRange = (
+    businessHours?:
+        | boolean
+        | { start: (typeof hours)[number]; end: (typeof hours)[number] },
+) => {
+    if (typeof businessHours === 'boolean') {
+        return hours.slice(
+            DEFAULT_BUSINESS_START_HOUR,
+            DEFAULT_BUSINESS_END_HOUR,
+        );
+    } else if (
+        businessHours &&
+        'start' in businessHours &&
+        'end' in businessHours
+    ) {
+        return hours.slice(businessHours.start, businessHours.end);
+    }
+    return hours;
+};
+
+export const addIntervalToHourRange = (range: number[], interval: number) => {
+    const period = interval / 60;
+    const iterations = 1 / period;
+
+    return range.flatMap((hour: number) => {
+        const result: number[] = [];
+
+        for (let i = 0; i < iterations; i++) {
+            if (typeof result[0] === 'undefined') result.push(hour);
+            else if (result[result.length - 1] + period < 24)
+                result.push(result[result.length - 1] + period);
+        }
+        return result;
+    });
 };

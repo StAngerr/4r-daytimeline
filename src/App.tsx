@@ -7,18 +7,29 @@ const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padSta
 const start = new Date(dateString);
 const end = new Date(new Date(start).setHours(start.getHours() + 1));
 
-console.log(start.toString());
-console.log(end.toString());
 /*TODO add inaccurate time periods ? like half hour for 1h interval or 10 minutes or 43*/
 function App() {
     return (
         <div className={'test-container'}>
             <DayTimeline
                 timeslotHeight={40}
-                onChange={(data) => console.log('from user ', data)}
+                onChange={(data) => data}
                 /*defaultSelected={{ start, end }}*/
                 /*defaultSelected={[0, 24]}*/
-                defaultSelected={['19:00', '21:30']}
+                defaultSelected={['09:00', '09:30']}
+                // businessHours={true}
+                // businessHours={{ start: 10, end: 20 }}
+                timeLabels={{
+                    position: 'right',
+                }}
+                selectedComponent={(args) => {
+                    return (
+                        <div>
+                            <span>{args.start}</span>
+                            <span>{args.end}</span>
+                        </div>
+                    );
+                }}
             />
         </div>
     );
