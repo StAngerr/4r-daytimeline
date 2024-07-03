@@ -21,6 +21,7 @@ interface Props {
     onChange: (newPeriod: PeriodValues) => void;
 }
 
+//TODO think if its possible to reuse this compoennt as base for NewPeriod due to repeatable content
 export const NewPeriod = ({
     onChange,
     interval,
@@ -182,7 +183,7 @@ export const NewPeriod = ({
             <div
                 ref={divRef}
                 style={placement}
-                className={'day-timeline-new-period'}
+                className={'day-timeline-period new-period'}
             >
                 <div
                     className={'resize-top'}

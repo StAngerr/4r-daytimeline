@@ -1,7 +1,7 @@
 import {
     BusinessHoursPeriod,
     CurrentTimeSettings,
-    Period,
+    Period as PeriodType,
     PeriodValues,
     TimeLabelsSettings,
 } from './DayTimeline.types.ts';
@@ -20,21 +20,27 @@ import React, {
 import { NewPeriod } from './NewPeriod/NewPeriod.tsx';
 import {
     addIntervalToHourRange,
+    datePeriodToValuePeriod,
     getHourRange,
+    isDateInRange,
+    isSameDate,
     parseDefaultPeriod,
+    roundToEndOfTheDay,
+    roundToStartOfTheDay,
     timeValuesToDatePeriod,
     toTimeLabel,
 } from './utils.ts';
+import { Period } from './Period/Period.tsx';
 
 interface Props {
-    defaultSelected?: Period | [number, number] | [string, string]; // +
-    onChange: (selected: Period) => void; // +
-    periods?: Period[];
+    defaultSelected?: PeriodType | [number, number] | [string, string]; // +
+    onChange: (selected: PeriodType) => void; // +
+    periods?: PeriodType[]; // +
     businessHours?: // +
     boolean | { start: (typeof hours)[number]; end: (typeof hours)[number] };
-    date?: Date;
+    date?: Date; // +
     currentTime?: CurrentTimeSettings;
-    timeLabels?: TimeLabelsSettings;
+    timeLabels?: TimeLabelsSettings; // +
     // TODO check what to use Component or FunctionalComponent
     selectedComponent?: React.FunctionComponent; // +
     timeslotHeight?: number; // +
@@ -47,6 +53,8 @@ export const DayTimeline = ({
     defaultSelected,
     onChange,
     className,
+    periods = [],
+    date = new Date(),
     interval = 30,
     timeslotHeight = 60,
     businessHours,
@@ -61,6 +69,8 @@ export const DayTimeline = ({
         () => 'day-timeline-container' + (className ? ` ${className}` : ''),
         [className],
     );
+
+    // TODO handle case if period start in same date as date prop but ends in antoher or vice versa when start in other but ends in current, provide class to indicate that date is iterupted
 
     const handleClick = useCallback(
         (value: number) => {
@@ -78,10 +88,6 @@ export const DayTimeline = ({
                         end: newEnd,
                     });
                 }
-                // setSelected({
-                //     start: value,
-                //     end: newEnd > 24 ? :  newEnd,
-                // });
             } else setSelected({ start: value, end: value + interval / 60 });
         },
         [interval, selected],
@@ -96,12 +102,7 @@ export const DayTimeline = ({
             style: baseStyles,
         };
         const { component, position } = timeLabels || {};
-        console.log(
-            addIntervalToHourRange(
-                getHourRange(businessHours) as number[],
-                interval,
-            ),
-        );
+
         return addIntervalToHourRange(
             getHourRange(businessHours) as number[],
             interval,
@@ -143,6 +144,66 @@ export const DayTimeline = ({
         return businessHours;
     }, [businessHours]);
 
+    const renderPeriods = useMemo(
+        () =>
+            periods.map((p) => {
+                let adjustedPeriod: PeriodType | null = null;
+                let crossDayStart = false;
+                let crossDayEnd = false;
+
+                if (isSameDate(p.start, date) && isSameDate(p.end, date)) {
+                    adjustedPeriod = p;
+                } else if (
+                    isSameDate(p.start, date) &&
+                    !isSameDate(p.end, date)
+                ) {
+                    crossDayEnd = true;
+                    adjustedPeriod = {
+                        ...p,
+                        end: roundToEndOfTheDay(date),
+                    };
+                } else if (
+                    !isSameDate(p.start, date) &&
+                    isSameDate(p.end, date)
+                ) {
+                    crossDayStart = true;
+                    adjustedPeriod = {
+                        ...p,
+                        start: roundToStartOfTheDay(date),
+                    };
+                } else if (
+                    !isSameDate(p.start, date) &&
+                    !isSameDate(p.end, date) &&
+                    isDateInRange(date, p.start, p.end)
+                ) {
+                    crossDayEnd = crossDayStart = true;
+                    adjustedPeriod = {
+                        ...p,
+                        start: roundToStartOfTheDay(date),
+                        end: roundToEndOfTheDay(date),
+                    };
+                }
+
+                return (
+                    adjustedPeriod && (
+                        <Period
+                            crossDayStart={crossDayStart}
+                            crossDayEnd={crossDayEnd}
+                            original={p}
+                            interval={interval}
+                            startEndHours={startEndHours}
+                            timeslotHeight={timeslotHeight}
+                            period={datePeriodToValuePeriod(
+                                adjustedPeriod,
+                                interval,
+                            )}
+                        />
+                    )
+                );
+            }),
+        [interval, startEndHours, timeslotHeight],
+    );
+
     useEffect(() => {
         if (divContainer.current && timeslotHeight) {
             divContainer.current.style.setProperty(
@@ -165,6 +226,7 @@ export const DayTimeline = ({
                     selectedComponent={selectedComponent}
                 />
             )}
+            {renderPeriods}
         </div>
     );
 };

@@ -32,16 +32,49 @@
         }
     }
 
-    .day-timeline-new-period {
+    .day-timeline-period {
         position: absolute;
         width: 95%;
-        border: 1px solid black;
-        background-color: #ccc;
         margin: 0 auto;
         left: 0;
         right: 0;
-        border-radius: 2px;
+        background-color: rgb(255 235 205 / 65%);
+        border: 1px solid black;
+        z-index: 1;
 
+
+        &.cross-start {
+            border-top: 2px dashed #878585;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                border: 5px solid transparent;
+                top: 0;
+                border-bottom-color: #878585;
+            }
+        }
+
+        &.cross-end {
+            border-bottom: 2px dashed #878585;
+
+            &::after {
+                content: "";
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                border: 5px solid transparent;
+                bottom: 0;
+                border-top-color: #878585;
+            }
+        }
+    }
+
+    .new-period {
+        background-color: #ccc;
+        border-radius: 2px;
 
         .resize-top,
         .resize-bottom {

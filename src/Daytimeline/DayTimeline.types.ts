@@ -4,6 +4,7 @@ import { hours } from './DayTimeline.constants.ts';
 export interface Period {
     start: Date;
     end: Date;
+    layer?: number;
     id?: string | number;
 }
 
