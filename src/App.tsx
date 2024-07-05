@@ -125,6 +125,9 @@ function App() {
                 timeLabels={{
                     position: 'right',
                 }}
+                currentTime={{
+                    showTime: true,
+                }}
                 periods={periods1.map((i, idx) => ({ ...i, id: idx }))}
                 selectedComponent={(args) => {
                     return (

@@ -29,5 +29,5 @@ export type DragDirection = 'top' | 'bottom';
 
 export interface BusinessHoursPeriod {
     start: (typeof hours)[number];
-    end: (typeof hours)[number];
+    end: (typeof hours)[number] | 24;
 }

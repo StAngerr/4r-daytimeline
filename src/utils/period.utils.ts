@@ -1,30 +1,18 @@
-import { Period, PeriodValues } from './DayTimeline.types.ts';
+import { Period, PeriodValues } from '../Daytimeline/DayTimeline.types.ts';
 import {
     DEFAULT_BUSINESS_END_HOUR,
     DEFAULT_BUSINESS_START_HOUR,
     hours,
-} from './DayTimeline.constants.ts';
+} from '../Daytimeline/DayTimeline.constants.ts';
+import { isValidNumberTuple, isValidStringTuple } from './validation.utils.ts';
 
-const hoursLeadingZero = (val: number) => (val < 10 ? '0' + val : val);
-
-// Accepts decimal values like 0.25 - 15min, 0.5 - 30m, 0.75 - 45min
-const valueToMin = (val: number) => 60 * val;
-
-// TODO think of formats as H-0-23 HH(leading zero)-00-23 h - 1-12 hh(leading zero)-1-12, m mm
-// @ts-ignore
-export const toTimeLabel = (i: number, format = '') => {
-    const [hour] = i.toString().split('.');
-
-    return `${hoursLeadingZero(+hour)}:${hoursLeadingZero(valueToMin(i - +hour))}`;
-};
-
-const minutesToHoursRatio = (min: number) => min / 60;
+export const minutesToTimeValue = (val: number) => val / 60;
 
 export const periodToTimelineValues = (date: Date) => {
     const hours = date.getHours();
     const min = date.getMinutes();
 
-    return hours + minutesToHoursRatio(min);
+    return hours + minutesToTimeValue(min);
 };
 
 export const timeValueToTopPosition = (
@@ -40,41 +28,10 @@ export const timeValueToBottomPosition = (
     // 24 hours - end value TODO added +1 itemHeight to not include period for example if period 9 -9.5 it should take exactyly one timeslot
 ) => `${val * (60 / interval) * itemHeight}px`;
 
-export const isValidNumberTuple = (
-    input: [unknown, unknown],
-): input is [number, number] => {
-    const [start, end] = input;
-    const isNumbers = typeof start === 'number' && typeof end === 'number';
-    return (
-        isNumbers &&
-        start < 24 &&
-        start >= 0 &&
-        end > 0 &&
-        end <= 24 &&
-        start < end
-    );
-};
-
-export const isValidTimeString = (timeString: string) => {
-    const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
-    return timeRegex.test(timeString);
-};
-
-export const isValidStringTuple = (
-    input: [unknown, unknown],
-): input is [string, string] => {
-    const [start, end] = input;
-    const isStrings = typeof start === 'string' && typeof end === 'string';
-
-    return isStrings && isValidTimeString(start) && isValidTimeString(end);
-};
-
-const roundToInterval = (value: number, interval: number): number => {
+export const roundToInterval = (value: number, interval: number): number => {
     const factor = 60 / interval;
     return Math.round(value * factor) / factor;
 };
-
-const minutesToTimeValue = (val: number) => val / 60;
 
 export const timeValueToMinutes = (val: number) => {
     const hours = Math.floor(val);
@@ -82,7 +39,7 @@ export const timeValueToMinutes = (val: number) => {
     return [hours, minutes];
 };
 
-const parseStringMinutes = (min: string, interval: number) => {
+export const parseStringMinutes = (min: string, interval: number) => {
     return roundToInterval(minutesToTimeValue(parseInt(min)), interval);
 };
 
@@ -172,11 +129,6 @@ export const addIntervalToHourRange = (range: number[], interval: number) => {
     });
 };
 
-export const isSameDate = (d1: Date, d2: Date) =>
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate();
-
 export const datePeriodToValuePeriod = (
     period: Period,
     interval: number,
@@ -197,21 +149,12 @@ export const datePeriodToValuePeriod = (
     };
 };
 
-export const roundToEndOfTheDay = (date: Date) => {
-    const clone = new Date(date.getTime());
-    clone.setHours(23);
-    clone.setMinutes(59);
-    clone.setSeconds(0);
-    return clone;
+export const calculateCurrentTimeTop = (
+    hours: number,
+    minutes: number,
+    itemHeight: number,
+    interval: number,
+) => {
+    const multiplayer = 60 / interval;
+    return (hours + minutesToTimeValue(minutes)) * multiplayer * itemHeight;
 };
-
-export const roundToStartOfTheDay = (date: Date) => {
-    const clone = new Date(date.getTime());
-    clone.setHours(0);
-    clone.setMinutes(1);
-    clone.setSeconds(0);
-    return clone;
-};
-
-export const isDateInRange = (target: Date, start: Date, end: Date) =>
-    target >= start && target <= end;

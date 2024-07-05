@@ -5,7 +5,10 @@ import React, {
     useCallback,
     useMemo,
 } from 'react';
-import { timeValueToBottomPosition, timeValueToTopPosition } from '../utils.ts';
+import {
+    timeValueToBottomPosition,
+    timeValueToTopPosition,
+} from '../../utils/period.utils.ts';
 import {
     BusinessHoursPeriod,
     DragDirection,

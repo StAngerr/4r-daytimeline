@@ -106,4 +106,21 @@
             transform: translateY(50%);
         }
     }
+
+    .current-time {
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background: black   ;
+    }
+
+    .current-time-label {
+        position: absolute;
+        left: 0;
+        transform: translateX(calc(-100% - 5px)) translateY(-50%);
+        background: #ccc;
+        border-radius: 10px;
+        padding: 5px;
+        font-size: 11px;
+    }
 }

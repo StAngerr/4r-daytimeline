@@ -1,5 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { timeValueToBottomPosition, timeValueToTopPosition } from '../utils.ts';
+import { useMemo, useState } from 'react';
+import {
+    timeValueToBottomPosition,
+    timeValueToTopPosition,
+} from '../../utils/period.utils.ts';
 import {
     BusinessHoursPeriod,
     Period as PeriodType,

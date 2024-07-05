@@ -22,15 +22,18 @@ import {
     addIntervalToHourRange,
     datePeriodToValuePeriod,
     getHourRange,
+    parseDefaultPeriod,
+    timeValuesToDatePeriod,
+} from '../utils/period.utils.ts';
+import { Period } from './Period/Period.tsx';
+import { CurrentTime } from './CurrentTime/CurrentTime.tsx';
+import {
     isDateInRange,
     isSameDate,
-    parseDefaultPeriod,
     roundToEndOfTheDay,
     roundToStartOfTheDay,
-    timeValuesToDatePeriod,
-    toTimeLabel,
-} from './utils.ts';
-import { Period } from './Period/Period.tsx';
+} from '../utils/time.utils.ts';
+import { toTimeLabel } from '../utils/format.utils.ts';
 
 interface Props {
     defaultSelected?: PeriodType | [number, number] | [string, string]; // +
@@ -39,7 +42,7 @@ interface Props {
     businessHours?: // +
     boolean | { start: (typeof hours)[number]; end: (typeof hours)[number] };
     date?: Date; // +
-    currentTime?: CurrentTimeSettings;
+    currentTime?: CurrentTimeSettings; // +
     timeLabels?: TimeLabelsSettings; // +
     // TODO check what to use Component or FunctionalComponent
     selectedComponent?: React.FunctionComponent; // +
@@ -59,6 +62,7 @@ export const DayTimeline = ({
     timeslotHeight = 60,
     businessHours,
     selectedComponent,
+    currentTime,
     timeLabels,
 }: Props) => {
     const [selected, setSelected] = useState<PeriodValues | null>(
@@ -227,6 +231,11 @@ export const DayTimeline = ({
                 />
             )}
             {renderPeriods}
+            <CurrentTime
+                interval={interval}
+                currentTime={currentTime}
+                timeslotHeight={timeslotHeight}
+            />
         </div>
     );
 };
