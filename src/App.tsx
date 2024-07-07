@@ -128,7 +128,7 @@ function App() {
                 currentTime={{
                     showTime: true,
                 }}
-                periods={periods1.map((i, idx) => ({ ...i, id: idx }))}
+                // periods={periods1.map((i, idx) => ({ ...i, id: idx }))}
                 selectedComponent={(args) => {
                     return (
                         <div>

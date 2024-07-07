@@ -33,19 +33,19 @@ export const roundToInterval = (value: number, interval: number): number => {
     return Math.round(value * factor) / factor;
 };
 
-export const timeValueToMinutes = (val: number) => {
+export const timeValueToTimeUnits = (val: number): [number, number] => {
     const hours = Math.floor(val);
     const minutes = Math.round((val - hours) * 60);
     return [hours, minutes];
 };
 
-export const parseStringMinutes = (min: string, interval: number) => {
+export const parseMinutesAndToTimeValue = (min: string, interval: number) => {
     return roundToInterval(minutesToTimeValue(parseInt(min)), interval);
 };
 
 export const timeStringToTimeValue = (time: string, interval: number) => {
     const [hour, minute] = time.split(':');
-    return parseInt(hour) + parseStringMinutes(minute, interval);
+    return parseInt(hour) + parseMinutesAndToTimeValue(minute, interval);
 };
 
 export const parseDefaultPeriod = (
@@ -67,20 +67,27 @@ export const parseDefaultPeriod = (
             };
         }
     }
-
+    //TODO check if needed to round to in terval
     if ('start' in defaultSelected && 'end' in defaultSelected)
         return {
-            start: periodToTimelineValues(defaultSelected.start),
-            end: periodToTimelineValues(defaultSelected.end),
+            start: roundToInterval(
+                periodToTimelineValues(defaultSelected.start),
+                interval,
+            ),
+            end: roundToInterval(
+                periodToTimelineValues(defaultSelected.end),
+                interval,
+            ),
         };
     return null;
 };
 
-export const timeValuesToDatePeriod = (period: PeriodValues) => {
+//TODO handle this with actual date from props ?
+export const timeValuesToDatePeriod = (period: PeriodValues): Period => {
     const start = new Date();
     const end = new Date();
-    const startValues = timeValueToMinutes(period.start);
-    const endValues = timeValueToMinutes(period.end);
+    const startValues = timeValueToTimeUnits(period.start);
+    const endValues = timeValueToTimeUnits(period.end);
 
     start.setHours(startValues[0]);
     start.setMinutes(startValues[1]);
@@ -101,14 +108,14 @@ export const getHourRange = (
     if (typeof businessHours === 'boolean') {
         return hours.slice(
             DEFAULT_BUSINESS_START_HOUR,
-            DEFAULT_BUSINESS_END_HOUR,
+            DEFAULT_BUSINESS_END_HOUR + 1,
         );
     } else if (
         businessHours &&
         'start' in businessHours &&
         'end' in businessHours
     ) {
-        return hours.slice(businessHours.start, businessHours.end);
+        return hours.slice(businessHours.start, businessHours.end + 1);
     }
     return hours;
 };

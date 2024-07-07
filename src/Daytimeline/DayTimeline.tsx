@@ -33,7 +33,7 @@ import {
     roundToEndOfTheDay,
     roundToStartOfTheDay,
 } from '../utils/time.utils.ts';
-import { toTimeLabel } from '../utils/format.utils.ts';
+import { buildTimeLabel } from '../utils/format.utils.ts';
 
 interface Props {
     defaultSelected?: PeriodType | [number, number] | [string, string]; // +
@@ -121,7 +121,7 @@ export const DayTimeline = ({
                                 'time-label' + (position ? ` ${position}` : '')
                             }
                         >
-                            {toTimeLabel(i)}
+                            {buildTimeLabel(i)}
                         </span>
                     )}
                 </div>
