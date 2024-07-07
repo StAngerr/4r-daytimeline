@@ -13,7 +13,7 @@ interface Props {
     timeslotHeight: number;
     interval: number;
     intervalValue: number;
-    selectedComponent?: React.FunctionComponent;
+    selectedComponent?: React.ComponentType;
     startEndHours: BusinessHoursPeriod;
     selected: { start: number; end: number };
     onChange: (newPeriod: PeriodValues) => void;
@@ -24,7 +24,7 @@ export const NewPeriod = ({
     onChange,
     interval,
     startEndHours,
-    selectedComponent,
+    selectedComponent: SelectedComp,
     timeslotHeight: STEP,
     intervalValue,
     selected,
@@ -187,7 +187,7 @@ export const NewPeriod = ({
                     onMouseUp={stopResize}
                     onMouseDown={() => startResize('top')}
                 ></div>
-                {selectedComponent && selectedComponent(selected)}
+                {SelectedComp && <SelectedComp selected={selected} />}
                 <div
                     className={'resize-bottom'}
                     onMouseUp={stopResize}

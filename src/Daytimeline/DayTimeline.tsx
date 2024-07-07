@@ -42,8 +42,7 @@ interface Props {
     date?: Date;
     currentTime?: CurrentTimeSettings;
     timeLabels?: TimeLabelsSettings;
-    // TODO check what to use Component or FunctionalComponent
-    selectedComponent?: React.FunctionComponent;
+    selectedComponent?: React.ComponentType;
     timeslotHeight?: number;
     className?: string;
     interval?: 30 | 60;

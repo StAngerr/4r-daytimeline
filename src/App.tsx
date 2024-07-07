@@ -1,6 +1,7 @@
 import './App.css';
 import '../src/Daytimeline/DayTimeline.css';
 import { DayTimeline } from './Daytimeline/DayTimeline.tsx';
+import { Component } from 'react';
 
 const today = new Date();
 const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}T13:00:00`;
@@ -40,8 +41,6 @@ const generatePeriods = (length, date) => {
 // Example usage
 const numberOfPeriods = 5;
 const periods = generatePeriods(numberOfPeriods, today);
-
-console.log(periods);
 
 const p1_s = new Date();
 const p1_e = new Date();
@@ -116,6 +115,16 @@ const periods1 = [
     { start: p7_s, end: p7_e },
     // { start: p6_s, end: p6_e },
 ];
+
+const RnadomComponent = () => {
+    return <div>random</div>;
+};
+
+class RandomClassCp extends Component {
+    render() {
+        return <div>classComponent</div>;
+    }
+}
 /*end*/
 /*TODO add inaccurate time periods ? like half hour for 1h interval or 10 minutes or 43*/
 function App() {
@@ -138,15 +147,16 @@ function App() {
                 }}
                 // periods={periods1.map((i, idx) => ({ ...i, id: idx }))}
                 periods={[{ start: p8_s, end: p8_e }]}
-                selectedComponent={(args) => {
-                    /*TODO define types for arguments*/
-                    return (
-                        <div>
-                            <span>{args.start}</span>
-                            <span>{args.end}</span>
-                        </div>
-                    );
-                }}
+                selectedComponent={RandomClassCp}
+                // selectedComponent={(args) => {
+                //     /*TODO define types for arguments*/
+                //     return (
+                //         <div>
+                //             <span>{args.start}</span>
+                //             <span>{args.end}</span>
+                //         </div>
+                //     );
+                // }}
             />
         </div>
     );

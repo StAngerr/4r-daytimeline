@@ -86,7 +86,6 @@ export const parseDefaultPeriod = (
     return null;
 };
 
-//TODO handle this with actual date from props ?
 export const timeValuesToDatePeriod = (
     period: PeriodValues,
     date: Date,
