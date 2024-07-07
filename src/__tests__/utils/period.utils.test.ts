@@ -263,24 +263,46 @@ describe('period utils tests', () => {
     });
     describe('timeValuesToDatePeriod tests', () => {
         it('should return correct period', () => {
-            const result = timeValuesToDatePeriod({
-                start: 1,
-                end: 2,
-            });
+            const result = timeValuesToDatePeriod(
+                {
+                    start: 1,
+                    end: 2,
+                },
+                new Date('2024-07-04T05:38:00Z'),
+            );
             expect(result.start.getHours()).toBe(1);
             expect(result.start.getMinutes()).toBe(0);
             expect(result.end.getHours()).toBe(2);
             expect(result.end.getMinutes()).toBe(0);
         });
-        it('should ', () => {
-            const result = timeValuesToDatePeriod({
-                start: 17.5,
-                end: 19.25,
-            });
+        it('should correct period', () => {
+            const result = timeValuesToDatePeriod(
+                {
+                    start: 17.5,
+                    end: 19.25,
+                },
+                new Date('2011-11-11T05:38:00Z'),
+            );
             expect(result.start.getHours()).toBe(17);
             expect(result.start.getMinutes()).toBe(30);
             expect(result.end.getHours()).toBe(19);
             expect(result.end.getMinutes()).toBe(15);
+        });
+
+        it('should has correct date', () => {
+            const result = timeValuesToDatePeriod(
+                {
+                    start: 17.5,
+                    end: 19.25,
+                },
+                new Date('2011-11-11T05:38:00Z'),
+            );
+            expect(result.start.getFullYear()).toBe(2011);
+            expect(result.start.getDate()).toBe(11);
+            expect(result.start.getMonth()).toBe(11 - 1);
+            expect(result.end.getFullYear()).toBe(2011);
+            expect(result.end.getDate()).toBe(11);
+            expect(result.end.getMonth()).toBe(11 - 1);
         });
     });
     describe('getHourRange tests', () => {
@@ -291,13 +313,11 @@ describe('period utils tests', () => {
             ]);
         });
         it('should handle business hours as boolean argument, hardcoded from 09 to 17', () => {
-            expect(getHourRange(true)).toEqual([
-                9, 10, 11, 12, 13, 14, 15, 16, 17,
-            ]);
+            expect(getHourRange(true)).toEqual([9, 10, 11, 12, 13, 14, 15, 16]);
         });
         it('should handle business hours as period', () => {
             expect(getHourRange({ start: 13, end: 17 })).toEqual([
-                13, 14, 15, 16, 17,
+                13, 14, 15, 16,
             ]);
         });
     });
@@ -315,61 +335,47 @@ describe('period utils tests', () => {
     describe('datePeriodToValuePeriod tests', () => {
         it('should return properly convert period, 30 interval', () => {
             expect(
-                datePeriodToValuePeriod(
-                    {
-                        start: new Date('2024-07-04T10:33:00Z'),
-                        end: new Date('2024-07-04T11:45:00Z'),
-                    },
-                    30,
-                ),
+                datePeriodToValuePeriod({
+                    start: new Date('2024-07-04T10:33:00Z'),
+                    end: new Date('2024-07-04T11:45:00Z'),
+                }),
             ).toEqual({
-                start: 10.5,
-                end: 12,
+                start: 10.55,
+                end: 11.75,
             });
             expect(
-                datePeriodToValuePeriod(
-                    {
-                        start: new Date('2024-07-04T01:11:00Z'),
-                        end: new Date('2024-07-04T23:23:00Z'),
-                    },
-                    30,
-                ),
+                datePeriodToValuePeriod({
+                    start: new Date('2024-07-04T01:11:00Z'),
+                    end: new Date('2024-07-04T23:23:00Z'),
+                }),
             ).toEqual({
-                start: 1,
-                end: 23.5,
-            });
-        });
-        it('should return properly convert period, 60 interval', () => {
-            expect(
-                datePeriodToValuePeriod(
-                    {
-                        start: new Date('2024-07-04T10:33:00Z'),
-                        end: new Date('2024-07-04T11:11:00Z'),
-                    },
-                    60,
-                ),
-            ).toEqual({
-                start: 11,
-                end: 11,
-            });
-            expect(
-                datePeriodToValuePeriod(
-                    {
-                        start: new Date('2024-07-04T01:55:00Z'),
-                        end: new Date('2024-07-04T23:03:00Z'),
-                    },
-                    60,
-                ),
-            ).toEqual({
-                start: 2,
-                end: 23,
+                start: 1.1833333333333333,
+                end: 23.383333333333333,
             });
         });
     });
     describe('calculateCurrentTimeTop tests', () => {
         it('should return return correct top position', () => {
-            expect(calculateCurrentTimeTop(10, 30, 20, 30)).toBe(420);
-            expect(calculateCurrentTimeTop(10, 30, 33, 30)).toBe(693);
+            expect(calculateCurrentTimeTop(10, 30, 20, 30, null)).toBe(420);
+            expect(calculateCurrentTimeTop(10, 30, 33, 30, null)).toBe(693);
+        });
+
+        it('should return correct position of current time if there is business hours', () => {
+            expect(
+                calculateCurrentTimeTop(10, 0, 50, 30, { start: 9, end: 15 }),
+            ).toBe(100);
+        });
+
+        it('should return zero if time is before of the start business hour. Example current time is 8 AM and business hour starts at 9', () => {
+            expect(
+                calculateCurrentTimeTop(8, 30, 50, 30, { start: 9, end: 15 }),
+            ).toBe(0);
+        });
+
+        it('should return max possible top posistion based on current range in case if current time is more then last bussines hour', () => {
+            expect(
+                calculateCurrentTimeTop(21, 30, 15, 60, { start: 8, end: 18 }),
+            ).toBe(150);
         });
     });
 });

@@ -99,6 +99,14 @@ p7_s.setMinutes(0);
 p7_e.setHours(1);
 p7_e.setMinutes(30);
 
+const p8_s = new Date('2024-07-07T10:00:00');
+const p8_e = new Date();
+p8_s.setHours(7);
+p8_s.setMinutes(0);
+
+p8_e.setHours(8);
+p8_e.setMinutes(35);
+
 const periods1 = [
     { start: p1_s, end: p1_e },
     { start: p2_s, end: p2_e },
@@ -115,13 +123,13 @@ function App() {
         <div className={'test-container'}>
             <DayTimeline
                 timeslotHeight={40}
-                onChange={(data) => data}
+                onChange={(data) => console.log(data)}
                 /*defaultSelected={{ start, end }}*/
                 /*defaultSelected={[0, 24]}*/
                 // defaultSelected={['09:00', '09:30']}
                 // businessHours={true}
-                // businessHours={{ start: 10, end: 20 }}
-                date={new Date()}
+                // businessHours={{ start: 22, end: 23 }}
+                date={new Date('2021-01-02T10:00:00')}
                 timeLabels={{
                     position: 'right',
                 }}
@@ -129,7 +137,9 @@ function App() {
                     showTime: true,
                 }}
                 // periods={periods1.map((i, idx) => ({ ...i, id: idx }))}
+                periods={[{ start: p8_s, end: p8_e }]}
                 selectedComponent={(args) => {
+                    /*TODO define types for arguments*/
                     return (
                         <div>
                             <span>{args.start}</span>

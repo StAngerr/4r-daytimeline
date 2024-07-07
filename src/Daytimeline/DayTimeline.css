@@ -12,6 +12,10 @@
         box-sizing: border-box;
         cursor: pointer;
 
+        &:first-child {
+            border-top: 1px solid #ccc;
+        }
+
         &:nth-child(2n) {
             border-bottom: 1px dotted #ccc;
         }
@@ -28,6 +32,15 @@
             &.right {
                 transform: translateX(100%) translateY(-50%);
                 right: 0;
+
+                &.extra {
+                    transform: translateX(100%) translateY(50%);
+                }
+            }
+
+            &.extra {
+                transform: translateX(-100%) translateY(50%);
+                bottom: 0;
             }
         }
     }

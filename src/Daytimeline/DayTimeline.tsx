@@ -8,7 +8,6 @@ import {
 import {
     DEFAULT_BUSINESS_END_HOUR,
     DEFAULT_BUSINESS_START_HOUR,
-    hours,
 } from './DayTimeline.constants.ts';
 import React, {
     useCallback,
@@ -36,19 +35,18 @@ import {
 import { buildTimeLabel } from '../utils/format.utils.ts';
 
 interface Props {
-    defaultSelected?: PeriodType | [number, number] | [string, string]; // +
-    onChange: (selected: PeriodType) => void; // +
-    periods?: PeriodType[]; // +
-    businessHours?: // +
-    boolean | { start: (typeof hours)[number]; end: (typeof hours)[number] };
-    date?: Date; // +
-    currentTime?: CurrentTimeSettings; // +
-    timeLabels?: TimeLabelsSettings; // +
+    defaultSelected?: PeriodType | [number, number] | [string, string];
+    onChange: (selected: PeriodType) => void;
+    periods?: PeriodType[];
+    businessHours?: boolean | BusinessHoursPeriod;
+    date?: Date;
+    currentTime?: CurrentTimeSettings;
+    timeLabels?: TimeLabelsSettings;
     // TODO check what to use Component or FunctionalComponent
-    selectedComponent?: React.FunctionComponent; // +
-    timeslotHeight?: number; // +
-    className?: string; // +
-    interval?: 30 | 60; // +
+    selectedComponent?: React.FunctionComponent;
+    timeslotHeight?: number;
+    className?: string;
+    interval?: 30 | 60;
 }
 const TIMESLOT_HEIGHT_VAR_NAME = '--timeslot-height';
 
@@ -73,8 +71,7 @@ export const DayTimeline = ({
         () => 'day-timeline-container' + (className ? ` ${className}` : ''),
         [className],
     );
-
-    // TODO handle case if period start in same date as date prop but ends in antoher or vice versa when start in other but ends in current, provide class to indicate that date is iterupted
+    const intervalValue = useMemo(() => interval / 60, [interval]);
 
     const handleClick = useCallback(
         (value: number) => {
@@ -106,23 +103,39 @@ export const DayTimeline = ({
             style: baseStyles,
         };
         const { component, position } = timeLabels || {};
-
-        return addIntervalToHourRange(
+        const hoursRange = addIntervalToHourRange(
             getHourRange(businessHours) as number[],
             interval,
-        ).map((i) => {
+        );
+
+        return hoursRange.map((i) => {
             return (
                 <div onClick={() => handleClick(i)} {...baseProps} key={i}>
                     {component ? (
                         component(i)
                     ) : (
-                        <span
-                            className={
-                                'time-label' + (position ? ` ${position}` : '')
-                            }
-                        >
-                            {buildTimeLabel(i)}
-                        </span>
+                        <>
+                            <span
+                                className={
+                                    'time-label' +
+                                    (position ? ` ${position}` : '')
+                                }
+                            >
+                                {buildTimeLabel(i)}
+                            </span>
+                            {businessHours &&
+                                i === hoursRange[hoursRange.length - 1] &&
+                                i !== 24 && (
+                                    <span
+                                        className={
+                                            'time-label extra' +
+                                            (position ? ` ${position}` : '')
+                                        }
+                                    >
+                                        {buildTimeLabel(i + intervalValue)}
+                                    </span>
+                                )}
+                        </>
                     )}
                 </div>
             );
@@ -132,11 +145,11 @@ export const DayTimeline = ({
     const handlePeriodChange = useCallback(
         (period: PeriodValues) => {
             setSelected(period);
-            onChange(timeValuesToDatePeriod(period));
+            onChange(timeValuesToDatePeriod(period, date));
         },
-        [onChange],
+        [onChange, date],
     );
-    // TODO for business hours range show last hour label
+
     const startEndHours: BusinessHoursPeriod = useMemo(() => {
         if (!businessHours) return { start: 0, end: 24 };
         if (typeof businessHours === 'boolean')
@@ -197,15 +210,12 @@ export const DayTimeline = ({
                             interval={interval}
                             startEndHours={startEndHours}
                             timeslotHeight={timeslotHeight}
-                            period={datePeriodToValuePeriod(
-                                adjustedPeriod,
-                                interval,
-                            )}
+                            period={datePeriodToValuePeriod(adjustedPeriod)}
                         />
                     )
                 );
             }),
-        [interval, startEndHours, timeslotHeight],
+        [date, interval, periods, startEndHours, timeslotHeight],
     );
 
     useEffect(() => {
@@ -222,6 +232,7 @@ export const DayTimeline = ({
             {renderRange}
             {selected && (
                 <NewPeriod
+                    intervalValue={intervalValue}
                     interval={interval}
                     selected={selected}
                     timeslotHeight={timeslotHeight}
@@ -235,6 +246,7 @@ export const DayTimeline = ({
                 interval={interval}
                 currentTime={currentTime}
                 timeslotHeight={timeslotHeight}
+                businessHours={businessHours}
             />
         </div>
     );

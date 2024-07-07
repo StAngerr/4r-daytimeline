@@ -1,10 +1,4 @@
-import React, {
-    useRef,
-    useEffect,
-    useState,
-    useCallback,
-    useMemo,
-} from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
     timeValueToBottomPosition,
     timeValueToTopPosition,
@@ -18,6 +12,7 @@ import {
 interface Props {
     timeslotHeight: number;
     interval: number;
+    intervalValue: number;
     selectedComponent?: React.FunctionComponent;
     startEndHours: BusinessHoursPeriod;
     selected: { start: number; end: number };
@@ -31,6 +26,7 @@ export const NewPeriod = ({
     startEndHours,
     selectedComponent,
     timeslotHeight: STEP,
+    intervalValue,
     selected,
 }: Props) => {
     const [placement, setPlacement] = useState({
@@ -59,8 +55,6 @@ export const NewPeriod = ({
             side: direction,
         };
     };
-
-    const intervalValue = useMemo(() => interval / 60, [interval]);
 
     //TODO think of splitting this function into smaller
     const doResize = useCallback(

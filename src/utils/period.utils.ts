@@ -1,4 +1,8 @@
-import { Period, PeriodValues } from '../Daytimeline/DayTimeline.types.ts';
+import {
+    BusinessHoursPeriod,
+    Period,
+    PeriodValues,
+} from '../Daytimeline/DayTimeline.types.ts';
 import {
     DEFAULT_BUSINESS_END_HOUR,
     DEFAULT_BUSINESS_START_HOUR,
@@ -83,9 +87,12 @@ export const parseDefaultPeriod = (
 };
 
 //TODO handle this with actual date from props ?
-export const timeValuesToDatePeriod = (period: PeriodValues): Period => {
-    const start = new Date();
-    const end = new Date();
+export const timeValuesToDatePeriod = (
+    period: PeriodValues,
+    date: Date,
+): Period => {
+    const start = new Date(date.getTime());
+    const end = new Date(date.getTime());
     const startValues = timeValueToTimeUnits(period.start);
     const endValues = timeValueToTimeUnits(period.end);
 
@@ -100,22 +107,18 @@ export const timeValuesToDatePeriod = (period: PeriodValues): Period => {
     };
 };
 
-export const getHourRange = (
-    businessHours?:
-        | boolean
-        | { start: (typeof hours)[number]; end: (typeof hours)[number] },
-) => {
+export const getHourRange = (businessHours?: boolean | BusinessHoursPeriod) => {
     if (typeof businessHours === 'boolean') {
         return hours.slice(
             DEFAULT_BUSINESS_START_HOUR,
-            DEFAULT_BUSINESS_END_HOUR + 1,
+            DEFAULT_BUSINESS_END_HOUR,
         );
     } else if (
         businessHours &&
         'start' in businessHours &&
         'end' in businessHours
     ) {
-        return hours.slice(businessHours.start, businessHours.end + 1);
+        return hours.slice(businessHours.start, businessHours.end);
     }
     return hours;
 };
@@ -136,32 +139,45 @@ export const addIntervalToHourRange = (range: number[], interval: number) => {
     });
 };
 
-export const datePeriodToValuePeriod = (
-    period: Period,
-    interval: number,
-): PeriodValues => {
+export const datePeriodToValuePeriod = (period: Period): PeriodValues => {
     return {
         start:
             period.start.getHours() +
-            roundToInterval(
-                minutesToTimeValue(period.start.getMinutes()),
-                interval,
-            ),
+            minutesToTimeValue(period.start.getMinutes()),
         end:
-            period.end.getHours() +
-            roundToInterval(
-                minutesToTimeValue(period.end.getMinutes()),
-                interval,
-            ),
+            period.end.getHours() + minutesToTimeValue(period.end.getMinutes()),
     };
 };
 
 export const calculateCurrentTimeTop = (
-    hours: number,
+    hr: number,
     minutes: number,
     itemHeight: number,
     interval: number,
+    businessHoursAsPeriod: BusinessHoursPeriod | null,
 ) => {
     const multiplayer = 60 / interval;
-    return (hours + minutesToTimeValue(minutes)) * multiplayer * itemHeight;
+    const subtractHours =
+        (businessHoursAsPeriod && businessHoursAsPeriod.start) || 0;
+
+    if (
+        businessHoursAsPeriod &&
+        hr + minutesToTimeValue(minutes) > businessHoursAsPeriod.end
+    )
+        return (
+            (businessHoursAsPeriod.end - businessHoursAsPeriod.start) *
+            multiplayer *
+            itemHeight
+        );
+    else if (
+        businessHoursAsPeriod &&
+        hr + minutesToTimeValue(minutes) < businessHoursAsPeriod.start
+    )
+        return 0;
+
+    return (
+        (hr - subtractHours + minutesToTimeValue(minutes)) *
+        multiplayer *
+        itemHeight
+    );
 };
