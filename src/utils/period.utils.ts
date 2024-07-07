@@ -29,12 +29,22 @@ export const timeValueToBottomPosition = (
     val: number,
     itemHeight: number,
     interval: number,
-    // 24 hours - end value TODO added +1 itemHeight to not include period for example if period 9 -9.5 it should take exactyly one timeslot
 ) => `${val * (60 / interval) * itemHeight}px`;
 
 export const roundToInterval = (value: number, interval: number): number => {
     const factor = 60 / interval;
     return Math.round(value * factor) / factor;
+};
+
+export const roundDownToInterval = (
+    value: number,
+    interval: number,
+): number => {
+    return Math.floor(value / interval) * interval;
+};
+
+export const roundUpToInterval = (value: number, interval: number): number => {
+    return Math.ceil(value / interval) * interval;
 };
 
 export const timeValueToTimeUnits = (val: number): [number, number] => {
@@ -47,41 +57,34 @@ export const parseMinutesAndToTimeValue = (min: string, interval: number) => {
     return roundToInterval(minutesToTimeValue(parseInt(min)), interval);
 };
 
-export const timeStringToTimeValue = (time: string, interval: number) => {
+export const timeStringToTimeValue = (time: string) => {
     const [hour, minute] = time.split(':');
-    return parseInt(hour) + parseMinutesAndToTimeValue(minute, interval);
+    return parseInt(hour) + minutesToTimeValue(parseInt(minute));
 };
 
 export const parseDefaultPeriod = (
     defaultSelected: Period | [number, number] | [string, string] | undefined,
-    interval: number,
 ): PeriodValues | null => {
     if (!defaultSelected) return null;
 
     if (Array.isArray(defaultSelected)) {
         if (isValidNumberTuple(defaultSelected))
             return {
-                start: roundToInterval(defaultSelected[0], interval),
-                end: roundToInterval(defaultSelected[1], interval),
+                start: defaultSelected[0],
+                end: defaultSelected[1],
             };
         else if (isValidStringTuple(defaultSelected)) {
             return {
-                start: timeStringToTimeValue(defaultSelected[0], interval),
-                end: timeStringToTimeValue(defaultSelected[1], interval),
+                start: timeStringToTimeValue(defaultSelected[0]),
+                end: timeStringToTimeValue(defaultSelected[1]),
             };
         }
     }
-    //TODO check if needed to round to in terval
+
     if ('start' in defaultSelected && 'end' in defaultSelected)
         return {
-            start: roundToInterval(
-                periodToTimelineValues(defaultSelected.start),
-                interval,
-            ),
-            end: roundToInterval(
-                periodToTimelineValues(defaultSelected.end),
-                interval,
-            ),
+            start: periodToTimelineValues(defaultSelected.start),
+            end: periodToTimelineValues(defaultSelected.end),
         };
     return null;
 };

@@ -106,6 +106,14 @@ p8_s.setMinutes(0);
 p8_e.setHours(8);
 p8_e.setMinutes(35);
 
+const p9_s = new Date();
+const p9_e = new Date();
+p9_s.setHours(7);
+p9_s.setMinutes(10);
+
+p9_e.setHours(8);
+p9_e.setMinutes(20);
+
 const periods1 = [
     { start: p1_s, end: p1_e },
     { start: p2_s, end: p2_e },
@@ -126,7 +134,6 @@ class RandomClassCp extends Component {
     }
 }
 /*end*/
-/*TODO add inaccurate time periods ? like half hour for 1h interval or 10 minutes or 43*/
 function App() {
     return (
         <div className={'test-container'}>
@@ -135,7 +142,7 @@ function App() {
                 onChange={(data) => console.log(data)}
                 /*defaultSelected={{ start, end }}*/
                 /*defaultSelected={[0, 24]}*/
-                // defaultSelected={['09:00', '09:30']}
+                defaultSelected={['06:10', '10:15']}
                 // businessHours={true}
                 // businessHours={{ start: 22, end: 23 }}
                 date={new Date('2021-01-02T10:00:00')}
@@ -146,17 +153,17 @@ function App() {
                     showTime: true,
                 }}
                 // periods={periods1.map((i, idx) => ({ ...i, id: idx }))}
-                periods={[{ start: p8_s, end: p8_e }]}
-                selectedComponent={RandomClassCp}
-                // selectedComponent={(args) => {
-                //     /*TODO define types for arguments*/
-                //     return (
-                //         <div>
-                //             <span>{args.start}</span>
-                //             <span>{args.end}</span>
-                //         </div>
-                //     );
-                // }}
+                periods={[{ start: p9_s, end: p9_e }]}
+                // selectedComponent={RandomClassCp}
+                selectedComponent={(args) => {
+                    console.log(args);
+                    return (
+                        <div>
+                            <span>{args.selected.start.toString()}</span>
+                            <span>{args.selected.end.toString()}</span>
+                        </div>
+                    );
+                }}
             />
         </div>
     );

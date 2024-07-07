@@ -25,3 +25,7 @@ export const isValidStringTuple = (
 
     return isStrings && isValidTimeString(start) && isValidTimeString(end);
 };
+
+export const isMultipleOf = (value: number, divisor: number) => {
+    return value % divisor === 0;
+};

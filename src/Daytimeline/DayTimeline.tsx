@@ -42,7 +42,7 @@ interface Props {
     date?: Date;
     currentTime?: CurrentTimeSettings;
     timeLabels?: TimeLabelsSettings;
-    selectedComponent?: React.ComponentType;
+    selectedComponent?: React.ComponentType<{ selected: PeriodType }>;
     timeslotHeight?: number;
     className?: string;
     interval?: 30 | 60;
@@ -63,7 +63,7 @@ export const DayTimeline = ({
     timeLabels,
 }: Props) => {
     const [selected, setSelected] = useState<PeriodValues | null>(
-        parseDefaultPeriod(defaultSelected, interval),
+        parseDefaultPeriod(defaultSelected),
     );
     const divContainer = useRef<HTMLDivElement | null>(null);
     const classes = useMemo(
@@ -238,6 +238,7 @@ export const DayTimeline = ({
                     onChange={handlePeriodChange}
                     startEndHours={startEndHours}
                     selectedComponent={selectedComponent}
+                    date={date}
                 />
             )}
             {renderPeriods}

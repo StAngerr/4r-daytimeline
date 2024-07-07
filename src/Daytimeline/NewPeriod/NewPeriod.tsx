@@ -1,22 +1,29 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
+    roundDownToInterval,
+    roundToInterval,
+    roundUpToInterval,
+    timeValuesToDatePeriod,
     timeValueToBottomPosition,
     timeValueToTopPosition,
 } from '../../utils/period.utils.ts';
 import {
     BusinessHoursPeriod,
     DragDirection,
+    Period,
     PeriodValues,
 } from '../DayTimeline.types.ts';
+import { isMultipleOf } from '../../utils/validation.utils.ts';
 
 interface Props {
     timeslotHeight: number;
     interval: number;
     intervalValue: number;
-    selectedComponent?: React.ComponentType;
+    selectedComponent?: React.ComponentType<{ selected: Period }>;
     startEndHours: BusinessHoursPeriod;
     selected: { start: number; end: number };
     onChange: (newPeriod: PeriodValues) => void;
+    date: Date;
 }
 
 //TODO think if its possible to reuse this compoennt as base for NewPeriod due to repeatable content
@@ -28,6 +35,7 @@ export const NewPeriod = ({
     timeslotHeight: STEP,
     intervalValue,
     selected,
+    date,
 }: Props) => {
     const [placement, setPlacement] = useState({
         top: timeValueToTopPosition(
@@ -71,7 +79,12 @@ export const NewPeriod = ({
                     //divElement.style.top = currentTop - STEP + 'px';
                     onChange({
                         ...selected,
-                        start: selected.start - intervalValue,
+                        start: isMultipleOf(selected.start, intervalValue)
+                            ? selected.start - intervalValue
+                            : roundDownToInterval(
+                                  selected.start,
+                                  intervalValue,
+                              ),
                     });
                 }
                 // upper part drag to bottom
@@ -83,7 +96,9 @@ export const NewPeriod = ({
                     //divElement.style.top = currentTop + STEP + 'px';
                     onChange({
                         ...selected,
-                        start: selected.start + intervalValue,
+                        start: isMultipleOf(selected.start, intervalValue)
+                            ? selected.start + intervalValue
+                            : roundUpToInterval(selected.start, intervalValue),
                     });
                 }
             } else if (moveState.current!.side === 'bottom') {
@@ -100,7 +115,9 @@ export const NewPeriod = ({
                     //divElement.style.bottom = currentBottom - STEP + 'px';
                     onChange({
                         ...selected,
-                        end: selected.end + intervalValue,
+                        end: isMultipleOf(selected.end, intervalValue)
+                            ? selected.end + intervalValue
+                            : roundUpToInterval(selected.end, intervalValue),
                     });
                 }
                 // bottom part drag to top
@@ -112,7 +129,9 @@ export const NewPeriod = ({
                     //divElement.style.bottom = currentBottom + STEP + 'px';
                     onChange({
                         ...selected,
-                        end: selected.end - intervalValue,
+                        end: isMultipleOf(selected.end, intervalValue)
+                            ? selected.end - intervalValue
+                            : roundDownToInterval(selected.end, intervalValue),
                     });
                 }
             }
@@ -187,7 +206,11 @@ export const NewPeriod = ({
                     onMouseUp={stopResize}
                     onMouseDown={() => startResize('top')}
                 ></div>
-                {SelectedComp && <SelectedComp selected={selected} />}
+                {SelectedComp && (
+                    <SelectedComp
+                        selected={timeValuesToDatePeriod(selected, date)}
+                    />
+                )}
                 <div
                     className={'resize-bottom'}
                     onMouseUp={stopResize}
