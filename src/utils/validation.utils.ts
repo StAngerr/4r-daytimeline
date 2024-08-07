@@ -14,7 +14,7 @@ export const isValidNumberTuple = (
 };
 export const isValidTimeString = (timeString: string) => {
     //two-digit hour and two-digit minute HH:mm
-    const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+    const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$|^24:00$/;
     return timeRegex.test(timeString);
 };
 export const isValidStringTuple = (

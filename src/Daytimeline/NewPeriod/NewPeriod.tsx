@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
     roundDownToInterval,
-    roundToInterval,
     roundUpToInterval,
     timeValuesToDatePeriod,
     timeValueToBottomPosition,
@@ -14,16 +13,19 @@ import {
     PeriodValues,
 } from '../DayTimeline.types.ts';
 import { isMultipleOf } from '../../utils/validation.utils.ts';
+import { toClasses } from '../../utils/general.ts';
 
-interface Props {
+export interface Props {
     timeslotHeight: number;
     interval: number;
     intervalValue: number;
     selectedComponent?: React.ComponentType<{ selected: Period }>;
     startEndHours: BusinessHoursPeriod;
-    selected: { start: number; end: number };
+    selected: PeriodValues;
     onChange: (newPeriod: PeriodValues) => void;
     date: Date;
+    className?: string;
+    editable?: boolean;
 }
 
 //TODO think if its possible to reuse this compoennt as base for NewPeriod due to repeatable content
@@ -34,6 +36,8 @@ export const NewPeriod = ({
     selectedComponent: SelectedComp,
     timeslotHeight: STEP,
     intervalValue,
+    editable = true,
+    className,
     selected,
     date,
 }: Props) => {
@@ -68,7 +72,6 @@ export const NewPeriod = ({
     const doResize = useCallback(
         (clientY: number, toTopDirection: boolean) => {
             if (!divRef.current) return;
-
             if (moveState.current!.side === 'top') {
                 const divElement = divRef.current;
                 const currentTop = parseFloat(divElement.style.top);
@@ -77,6 +80,7 @@ export const NewPeriod = ({
                 // upper part drag to top
                 if (toTopDirection && clientY < top && currentTop - STEP >= 0) {
                     //divElement.style.top = currentTop - STEP + 'px';
+
                     onChange({
                         ...selected,
                         start: isMultipleOf(selected.start, intervalValue)
@@ -94,6 +98,7 @@ export const NewPeriod = ({
                     top + STEP < bottom
                 ) {
                     //divElement.style.top = currentTop + STEP + 'px';
+
                     onChange({
                         ...selected,
                         start: isMultipleOf(selected.start, intervalValue)
@@ -113,6 +118,7 @@ export const NewPeriod = ({
                     currentBottom - STEP >= 0
                 ) {
                     //divElement.style.bottom = currentBottom - STEP + 'px';
+
                     onChange({
                         ...selected,
                         end: isMultipleOf(selected.end, intervalValue)
@@ -126,7 +132,8 @@ export const NewPeriod = ({
                     clientY < bottom &&
                     bottom - STEP > top
                 ) {
-                    //divElement.style.bottom = currentBottom + STEP + 'px';
+                    //divElement.style.bottom = currentBottom + STEP + 'px';'
+
                     onChange({
                         ...selected,
                         end: isMultipleOf(selected.end, intervalValue)
@@ -136,7 +143,7 @@ export const NewPeriod = ({
                 }
             }
         },
-        [STEP, intervalValue, selected],
+        [STEP, intervalValue, selected, onChange],
     );
 
     const stopResize = () => {
@@ -199,23 +206,30 @@ export const NewPeriod = ({
             <div
                 ref={divRef}
                 style={placement}
-                className={'day-timeline-period new-period'}
+                className={toClasses(
+                    'day-timeline-period new-period',
+                    className,
+                )}
             >
-                <div
-                    className={'resize-top'}
-                    onMouseUp={stopResize}
-                    onMouseDown={() => startResize('top')}
-                ></div>
+                {editable && (
+                    <div
+                        className={'resize-top'}
+                        onMouseUp={stopResize}
+                        onMouseDown={() => startResize('top')}
+                    ></div>
+                )}
                 {SelectedComp && (
                     <SelectedComp
                         selected={timeValuesToDatePeriod(selected, date)}
                     />
                 )}
-                <div
-                    className={'resize-bottom'}
-                    onMouseUp={stopResize}
-                    onMouseDown={() => startResize('bottom')}
-                ></div>
+                {editable && (
+                    <div
+                        className={'resize-bottom'}
+                        onMouseUp={stopResize}
+                        onMouseDown={() => startResize('bottom')}
+                    ></div>
+                )}
             </div>
         </>
     );

@@ -3,6 +3,8 @@ import {
     CurrentTimeSettings,
     Period as PeriodType,
     PeriodValues,
+    SegmentedConfig,
+    SegmentedPartConfig,
     TimeLabelsSettings,
 } from './DayTimeline.types.ts';
 import {
@@ -33,6 +35,7 @@ import {
     roundToStartOfTheDay,
 } from '../utils/time.utils.ts';
 import { buildTimeLabel } from '../utils/format.utils.ts';
+import { SegmentedPeriod } from './SegmentedPeriod/SegmentedPeriod.tsx';
 
 interface Props {
     defaultSelected?: PeriodType | [number, number] | [string, string];
@@ -46,6 +49,8 @@ interface Props {
     timeslotHeight?: number;
     className?: string;
     interval?: 30 | 60;
+    segmented?: SegmentedConfig;
+    segmentedParts?: SegmentedPartConfig;
 }
 const TIMESLOT_HEIGHT_VAR_NAME = '--timeslot-height';
 
@@ -59,6 +64,7 @@ export const DayTimeline = ({
     timeslotHeight = 60,
     businessHours,
     selectedComponent,
+    segmentedParts,
     currentTime,
     timeLabels,
 }: Props) => {
@@ -229,18 +235,31 @@ export const DayTimeline = ({
     return (
         <div ref={divContainer} className={classes}>
             {renderRange}
-            {selected && (
-                <NewPeriod
-                    intervalValue={intervalValue}
-                    interval={interval}
-                    selected={selected}
-                    timeslotHeight={timeslotHeight}
-                    onChange={handlePeriodChange}
-                    startEndHours={startEndHours}
-                    selectedComponent={selectedComponent}
-                    date={date}
-                />
-            )}
+            {selected &&
+                (segmentedParts ? (
+                    <SegmentedPeriod
+                        segmentedParts={segmentedParts}
+                        intervalValue={intervalValue}
+                        interval={interval}
+                        selected={selected}
+                        timeslotHeight={timeslotHeight}
+                        onChange={handlePeriodChange}
+                        startEndHours={startEndHours}
+                        selectedComponent={selectedComponent}
+                        date={date}
+                    />
+                ) : (
+                    <NewPeriod
+                        intervalValue={intervalValue}
+                        interval={interval}
+                        selected={selected}
+                        timeslotHeight={timeslotHeight}
+                        onChange={handlePeriodChange}
+                        startEndHours={startEndHours}
+                        selectedComponent={selectedComponent}
+                        date={date}
+                    />
+                ))}
             {renderPeriods}
             <CurrentTime
                 interval={interval}

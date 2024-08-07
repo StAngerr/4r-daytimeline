@@ -23,6 +23,7 @@ export interface TimeLabelsSettings {
 export interface PeriodValues {
     start: number;
     end: number;
+    id?: string | number;
 }
 
 export type DragDirection = 'top' | 'bottom';
@@ -30,4 +31,32 @@ export type DragDirection = 'top' | 'bottom';
 export interface BusinessHoursPeriod {
     start: (typeof hours)[number];
     end: (typeof hours)[number] | 24;
+}
+
+//TODO implement all props
+interface Segment {
+    editableStart?: boolean;
+    editableEnd?: boolean;
+    period: Period | [number, number] | [string, string];
+    styles?: React.CSSProperties;
+    component?: React.ComponentType;
+}
+
+interface PartSegment
+    extends Omit<Segment, 'period' | 'editableEnd' | 'editableStart'> {
+    period: number;
+    editable?: boolean;
+}
+
+export interface SegmentedPartConfig {
+    startMinutes?: PartSegment;
+    endMinutes?: PartSegment;
+    //TODO think of implementing those as well
+    firstIntervals?: number;
+    endIntervals?: number;
+}
+
+export interface SegmentedConfig {
+    period: Period | [number, number] | [string, string];
+    segments: Segment[];
 }

@@ -118,6 +118,38 @@
             bottom: 0;
             transform: translateY(50%);
         }
+
+
+        &.segmented-resize {
+            .resize-top,
+            .resize-bottom {
+                width: 20px;
+                height: 20px;
+
+                &:hover {
+                    &::before,
+                    &::after{
+                        transform: translateY(-50%) scale(1.2);
+                    }
+                }
+
+                &::before,
+                &::after{
+                    left: 0;
+                    right: 0;
+                    margin: 0 auto;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+
+            .resize-top {
+                right: 15px;
+            }
+            .resize-bottom {
+                left: 15px;
+            }
+        }
     }
 
     .current-time {

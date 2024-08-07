@@ -142,7 +142,7 @@ function App() {
                 onChange={(data) => console.log(data)}
                 /*defaultSelected={{ start, end }}*/
                 /*defaultSelected={[0, 24]}*/
-                defaultSelected={['06:10', '10:15']}
+                defaultSelected={['23:45', '24:00']}
                 // businessHours={true}
                 // businessHours={{ start: 22, end: 23 }}
                 date={new Date('2021-01-02T10:00:00')}
@@ -152,15 +152,20 @@ function App() {
                 currentTime={{
                     showTime: true,
                 }}
+                segmentedParts={{
+                    startMinutes: {
+                        period: 15,
+                        editable: false,
+                    },
+                }}
                 // periods={periods1.map((i, idx) => ({ ...i, id: idx }))}
-                periods={[{ start: p9_s, end: p9_e }]}
+                // periods={[{ start: p9_s, end: p9_e }]}
                 // selectedComponent={RandomClassCp}
                 selectedComponent={(args) => {
-                    console.log(args);
                     return (
                         <div>
-                            <span>{args.selected.start.toString()}</span>
-                            <span>{args.selected.end.toString()}</span>
+                            {/*<span>{args.selected.start.toString()}</span>*/}
+                            {/*<span>{args.selected.end.toString()}</span>*/}
                         </div>
                     );
                 }}

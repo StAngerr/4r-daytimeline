@@ -100,30 +100,14 @@ describe('period utils tests', () => {
         });
     });
     describe('timeStringToTimeValue tests', () => {
-        it('should return correct time value for interval 30', () => {
-            expect(timeStringToTimeValue('10:30', 30)).toBe(10.5);
-            expect(timeStringToTimeValue('01:30', 30)).toBe(1.5);
-            expect(timeStringToTimeValue('21:00', 30)).toBe(21);
-            expect(timeStringToTimeValue('21:11', 30)).toBe(21);
-            expect(timeStringToTimeValue('21:25', 30)).toBe(21.5);
-            expect(timeStringToTimeValue('00:25', 30)).toBe(0.5);
-            expect(timeStringToTimeValue('00:05', 30)).toBe(0);
-        });
-        it('should return correct time value for interval 60', () => {
-            expect(timeStringToTimeValue('10:30', 60)).toBe(11);
-            expect(timeStringToTimeValue('01:30', 60)).toBe(2);
-            expect(timeStringToTimeValue('21:55', 60)).toBe(22);
-            expect(timeStringToTimeValue('21:45', 60)).toBe(22);
-            expect(timeStringToTimeValue('21:25', 60)).toBe(21);
-            expect(timeStringToTimeValue('00:25', 60)).toBe(0);
-            expect(timeStringToTimeValue('00:05', 60)).toBe(0);
-        });
-        it('should return correct time value for interval 15', () => {
-            expect(timeStringToTimeValue('10:30', 15)).toBe(10.5);
-            expect(timeStringToTimeValue('10:22', 15)).toBe(10.25);
-            expect(timeStringToTimeValue('10:11', 15)).toBe(10.25);
-            expect(timeStringToTimeValue('01:35', 15)).toBe(1.5);
-            expect(timeStringToTimeValue('01:55', 15)).toBe(2);
+        it('should return correct time value', () => {
+            expect(timeStringToTimeValue('10:30')).toBe(10.5);
+            expect(timeStringToTimeValue('01:30')).toBe(1.5);
+            expect(timeStringToTimeValue('21:00')).toBe(21);
+            expect(timeStringToTimeValue('21:11')).toBe(21.183333333333334);
+            expect(timeStringToTimeValue('21:25')).toBe(21.416666666666668);
+            expect(timeStringToTimeValue('00:25')).toBe(0.4166666666666667);
+            expect(timeStringToTimeValue('00:05')).toBe(0);
         });
     });
 
@@ -134,130 +118,104 @@ describe('period utils tests', () => {
             expect(parseDefaultPeriod(false)).toBeNull();
         });
         it('should return parse default periods interval 30, as tuple', () => {
-            expect(parseDefaultPeriod([1, 5], 30)).toEqual({
+            expect(parseDefaultPeriod([1, 5])).toEqual({
                 start: 1,
                 end: 5,
             });
-            expect(parseDefaultPeriod([1.45, 5.3], 30)).toEqual({
-                start: 1.5,
-                end: 5.5,
+            expect(parseDefaultPeriod([1.45, 5.3])).toEqual({
+                start: 1.45,
+                end: 5.3,
             });
-            expect(parseDefaultPeriod([0.25, 5.8], 30)).toEqual({
-                start: 0.5,
-                end: 6,
-            });
-        });
-        it('should return parse default periods interval 60, as tuple', () => {
-            expect(parseDefaultPeriod([1, 5], 60)).toEqual({
-                start: 1,
-                end: 5,
-            });
-            expect(parseDefaultPeriod([1.35, 5.77], 60)).toEqual({
-                start: 1,
-                end: 6,
-            });
-            expect(parseDefaultPeriod([0.25, 15.8], 60)).toEqual({
-                start: 0,
-                end: 16,
+            expect(parseDefaultPeriod([0.25, 5.8])).toEqual({
+                start: 0.25,
+                end: 5.8,
             });
         });
 
         it('should return null in case if tuple is invalid', () => {
-            expect(parseDefaultPeriod([33, 15.8], 30)).toBeNull();
-            expect(parseDefaultPeriod([19, 1], 30)).toBeNull();
-            expect(parseDefaultPeriod(['1', '3'], 30)).toBeNull();
-            expect(parseDefaultPeriod([1, '3'], 30)).toBeNull();
-            expect(parseDefaultPeriod(['1', 3], 30)).toBeNull();
+            expect(parseDefaultPeriod([33, 15.8])).toBeNull();
+            expect(parseDefaultPeriod([19, 1])).toBeNull();
+            expect(parseDefaultPeriod(['1', '3'])).toBeNull();
+            expect(parseDefaultPeriod([1, '3'])).toBeNull();
+            expect(parseDefaultPeriod(['1', 3])).toBeNull();
         });
 
         it('should return parse default periods interval 60, as tuple', () => {
-            expect(parseDefaultPeriod(['01:20', '03:45'], 60)).toEqual({
-                start: 1,
-                end: 4,
+            expect(parseDefaultPeriod(['01:20', '03:45'])).toEqual({
+                start: 1.3333333333333333,
+                end: 3.75,
             });
-            expect(parseDefaultPeriod(['01:30', '17:13'], 60)).toEqual({
-                start: 2,
-                end: 17,
+            expect(parseDefaultPeriod(['01:30', '17:13'])).toEqual({
+                start: 1.5,
+                end: 17.216666666666665,
             });
-            expect(parseDefaultPeriod(['15:15', '15:15'], 60)).toEqual({
-                start: 15,
-                end: 15,
+            expect(parseDefaultPeriod(['15:15', '15:15'])).toEqual({
+                start: 15.25,
+                end: 15.25,
             });
         });
 
         it('should return parse default periods interval 30, as tuple', () => {
-            expect(parseDefaultPeriod(['01:25', '03:45'], 30)).toEqual({
-                start: 1.5,
-                end: 4,
+            expect(parseDefaultPeriod(['01:25', '03:45'])).toEqual({
+                start: 1.4166666666666667,
+                end: 3.75,
             });
-            expect(parseDefaultPeriod(['01:25', '17:13'], 30)).toEqual({
-                start: 1.5,
-                end: 17,
+            expect(parseDefaultPeriod(['01:25', '17:13'])).toEqual({
+                start: 1.4166666666666667,
+                end: 17.216666666666665,
             });
-            expect(parseDefaultPeriod(['15:15', '15:15'], 30)).toEqual({
-                start: 15.5,
-                end: 15.5,
+            expect(parseDefaultPeriod(['15:15', '15:15'])).toEqual({
+                start: 15.25,
+                end: 15.25,
             });
-            expect(parseDefaultPeriod(['15:45', '18:55'], 30)).toEqual({
-                start: 16,
-                end: 19,
+            expect(parseDefaultPeriod(['15:45', '18:55'])).toEqual({
+                start: 15.75,
+                end: 18.916666666666668,
             });
         });
 
         it('should return null in case of incorrect strings', () => {
-            expect(parseDefaultPeriod(['sdada', 'sada:55'], 60)).toBeNull();
-            expect(parseDefaultPeriod(['111:1223', '11:1234'], 60)).toBeNull();
-            expect(parseDefaultPeriod(['11-10', '11:88'], 60)).toBeNull();
+            expect(parseDefaultPeriod(['sdada', 'sada:55'])).toBeNull();
+            expect(parseDefaultPeriod(['111:1223', '11:1234'])).toBeNull();
+            expect(parseDefaultPeriod(['11-10', '11:88'])).toBeNull();
         });
 
         it('should correctly handle period as argument', () => {
             expect(
-                parseDefaultPeriod(
-                    {
-                        start: new Date('2024-07-04T16:00:00Z'),
-                        end: new Date('2024-07-04T21:00:00Z'),
-                    },
-                    60,
-                ),
+                parseDefaultPeriod({
+                    start: new Date('2024-07-04T16:00:00Z'),
+                    end: new Date('2024-07-04T21:00:00Z'),
+                }),
             ).toEqual({
                 start: 16,
                 end: 21,
             });
             expect(
-                parseDefaultPeriod(
-                    {
-                        start: new Date('2024-07-04T01:30:00Z'),
-                        end: new Date('2024-07-04T05:30:00Z'),
-                    },
-                    60,
-                ),
+                parseDefaultPeriod({
+                    start: new Date('2024-07-04T01:30:00Z'),
+                    end: new Date('2024-07-04T05:30:00Z'),
+                }),
             ).toEqual({
-                start: 2,
-                end: 6,
+                start: 1.5,
+                end: 5.5,
             });
             expect(
-                parseDefaultPeriod(
-                    {
-                        start: new Date('2024-07-04T01:15:00Z'),
-                        end: new Date('2024-07-04T05:11:00Z'),
-                    },
-                    60,
-                ),
+                parseDefaultPeriod({
+                    start: new Date('2024-07-04T01:15:00Z'),
+                    end: new Date('2024-07-04T05:11:00Z'),
+                }),
             ).toEqual({
-                start: 1,
-                end: 5,
+                start: 1.25,
+                end: 5.183333333333334,
             });
             expect(
-                parseDefaultPeriod(
-                    {
-                        start: new Date('2024-07-04T01:45:00Z'),
-                        end: new Date('2024-07-04T05:38:00Z'),
-                    },
-                    60,
-                ),
+                parseDefaultPeriod({
+                    start: new Date('2024-07-04T01:45:00Z'),
+                    end: new Date('2024-07-04T05:38:00Z'),
+                }),
             ).toEqual({
-                start: 2,
-                end: 6,
+                start: 1.75,
+                end: 5.633333333333333,
             });
         });
     });
