@@ -45,6 +45,10 @@ export const CurrentTime = ({
     }, [businessHours]);
 
     const currentTimeLabel = useMemo(() => {
+        if (currentTime?.component) {
+            const CustomComponent = currentTime?.component;
+            return <CustomComponent timeLabel={timeLabel} />;
+        }
         if (currentTime?.showTime)
             return <span className={'current-time-label'}>{timeLabel}</span>;
 

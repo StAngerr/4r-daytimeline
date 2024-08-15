@@ -9,8 +9,9 @@ export interface Period {
 }
 
 export interface CurrentTimeSettings {
+    //TODO not implemented
     formatTime?: string;
-    component?: React.Component;
+    component?: React.ComponentType<{ timeLabel: string }>;
     showTime?: boolean;
     showLine?: boolean;
 }
