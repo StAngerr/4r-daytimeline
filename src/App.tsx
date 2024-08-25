@@ -135,6 +135,15 @@ class RandomClassCp extends Component {
 }
 /*end*/
 function App() {
+    if (true)
+        return (
+            <div className={'test-container'}>
+                <DayTimeline
+                    periods={[{ start: p2_s, end: p2_e }]}
+                    onChange={(a) => console.log(a)}
+                />
+            </div>
+        );
     return (
         <div className={'test-container'}>
             <DayTimeline

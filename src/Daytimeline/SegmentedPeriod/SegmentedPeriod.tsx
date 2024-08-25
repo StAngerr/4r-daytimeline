@@ -2,6 +2,7 @@ import { PeriodValues, SegmentedPartConfig } from '../DayTimeline.types.ts';
 import { NewPeriod, Props as NewPeriodProps } from '../NewPeriod/NewPeriod.tsx';
 import { useCallback, useEffect, useState } from 'react';
 import { minutesToTimeValue } from '../../utils/period.utils.ts';
+import { isDefined } from '../../utils/validation.utils.ts';
 
 interface Props extends NewPeriodProps {
     segmentedParts: SegmentedPartConfig;
@@ -15,7 +16,7 @@ const PartsIds = {
 const noUndefinedFilter = (i: object | undefined | unknown) =>
     typeof i !== 'undefined';
 
-type PartsState = (PeriodValues & { editable: boolean })[];
+type PartsState = (PeriodValues & { editable?: boolean })[];
 
 export const SegmentedPeriod = ({
     segmentedParts,
@@ -154,7 +155,7 @@ export const SegmentedPeriod = ({
                 start,
                 { ...actualSelected, id: PartsIds.mid, editable: true },
                 end,
-            ].filter((i) => typeof i !== 'undefined'),
+            ].filter(isDefined),
         );
     }, [segmentedParts, newPeriodProps.selected]);
 

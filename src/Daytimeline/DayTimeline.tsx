@@ -209,6 +209,7 @@ export const DayTimeline = ({
                 return (
                     adjustedPeriod && (
                         <Period
+                            date={date}
                             crossDayStart={crossDayStart}
                             crossDayEnd={crossDayEnd}
                             original={p}

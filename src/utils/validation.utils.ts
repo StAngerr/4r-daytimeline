@@ -29,3 +29,7 @@ export const isValidStringTuple = (
 export const isMultipleOf = (value: number, divisor: number) => {
     return value % divisor === 0;
 };
+
+export const isDefined = <T>(value: T | undefined): value is T => {
+    return value !== undefined;
+};
