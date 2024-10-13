@@ -1,8 +1,8 @@
-import { PeriodValues, SegmentedPartConfig } from '../DayTimeline.types.ts';
-import { NewPeriod, Props as NewPeriodProps } from '../NewPeriod/NewPeriod.tsx';
+import { PeriodValues, SegmentedPartConfig } from '../DayTimeline.types';
+import { NewPeriod, Props as NewPeriodProps } from '../NewPeriod/NewPeriod';
 import { useCallback, useEffect, useState } from 'react';
-import { minutesToTimeValue } from '../../utils/period.utils.ts';
-import { isDefined } from '../../utils/validation.utils.ts';
+import { minutesToTimeValue } from '../../utils/period.utils';
+import { isDefined } from '../../utils/validation.utils';
 
 interface Props extends NewPeriodProps {
     segmentedParts: SegmentedPartConfig;

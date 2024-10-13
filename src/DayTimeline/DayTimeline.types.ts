@@ -1,5 +1,5 @@
 import React from 'react';
-import { hours } from './DayTimeline.constants.ts';
+import { hours } from './DayTimeline.constants';
 
 export interface Period {
     start: Date;

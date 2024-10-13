@@ -3,15 +3,15 @@ import {
     timeValuesToDatePeriod,
     timeValueToBottomPosition,
     timeValueToTopPosition,
-} from '../../utils/period.utils.ts';
+} from '../../utils/period.utils';
 import {
     BusinessHoursPeriod,
     Period as PeriodType,
     PeriodValues,
-} from '../DayTimeline.types.ts';
-import { buildTimeLabel } from '../../utils/format.utils.ts';
-import { toClasses } from '../../utils/general.ts';
-import { useAfterMountEffect } from '../../hooks/useAfterMountEffect.tsx';
+} from '../DayTimeline.types';
+import { buildTimeLabel } from '../../utils/format.utils';
+import { toClasses } from '../../utils/general';
+import { useAfterMountEffect } from '../../hooks/useAfterMountEffect';
 
 interface Props {
     period: PeriodValues;

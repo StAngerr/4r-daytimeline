@@ -4,16 +4,16 @@ import {
     roundUpToInterval,
     timeValuesToDatePeriod,
     timeValueToTimeUnits,
-} from '../../utils/period.utils.ts';
+} from '../../utils/period.utils';
 import {
     BusinessHoursPeriod,
     DragDirection,
     Period as PeriodType,
     PeriodValues,
-} from '../DayTimeline.types.ts';
-import { isMultipleOf } from '../../utils/validation.utils.ts';
-import { Period } from '../Period/Period.tsx';
-import { toClasses } from '../../utils/general.ts';
+} from '../DayTimeline.types';
+import { isMultipleOf } from '../../utils/validation.utils';
+import { Period } from '../Period/Period';
+import { toClasses } from '../../utils/general';
 
 export interface Props {
     timeslotHeight: number;

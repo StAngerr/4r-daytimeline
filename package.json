@@ -1,8 +1,15 @@
 {
-  "name": "timeline-proto",
+  "name": "4r-daytimeline",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "0.0.1",
+  "description": "Component created for react to select day timeslots and display events. Same as in outlook during event creation process",
+  "main": "dist/4r-daytimeline.umd.js",
+  "module": "dist/4r-daytimeline.es.js",
+  "types": "dist/types/src/index.d.ts",
+  "sideEffects": false,
+  "author": "Taras Stekhnovych",
+  "license": "MIT",
+  "repository": "https://github.com/StAngerr/reols-daytimeline",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -10,11 +17,6 @@
     "preview": "vite preview",
     "test": "TZ=UTC jest",
     "e2e": "npx cypress open"
-  },
-  "dependencies": {
-    "date-fns": "^3.6.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@babel/core": "7.24.7",
@@ -38,9 +40,36 @@
     "jest-environment-jsdom": "29.7.0",
     "jsdom": "24.1.0",
     "prettier": "3.3.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "ts-jest": "29.1.5",
     "ts-node": "10.9.2",
     "typescript": "5.2.2",
-    "vite": "5.3.1"
+    "vite": "5.3.1",
+    "vite-plugin-dts": "^4.0.3"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "react",
+    "time picker",
+    "day time picker",
+    "time picker",
+    "scheduler",
+    "day scheduler",
+    "reservations",
+    "booking",
+    "ui",
+    "bookings",
+    "event",
+    "events",
+    "timeline",
+    "day",
+    "vertical"
+  ],
+  "peerDependencies": {
+    "react": "18.0.0",
+    "react-dom": "18.0.0"
   }
 }

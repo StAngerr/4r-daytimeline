@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-    BusinessHoursPeriod,
-    CurrentTimeSettings,
-} from '../DayTimeline.types.ts';
-import { calculateCurrentTimeTop } from '../../utils/period.utils.ts';
-import { buildTimeLabel } from '../../utils/format.utils.ts';
+import { BusinessHoursPeriod, CurrentTimeSettings } from '../DayTimeline.types';
+import { calculateCurrentTimeTop } from '../../utils/period.utils';
+import { buildTimeLabel } from '../../utils/format.utils';
 import {
     DEFAULT_BUSINESS_END_HOUR,
     DEFAULT_BUSINESS_START_HOUR,
-} from '../DayTimeline.constants.ts';
+} from '../DayTimeline.constants';
 
 interface Props {
     currentTime?: CurrentTimeSettings;

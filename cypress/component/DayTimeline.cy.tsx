@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 
-import { DayTimeline } from '../../src/Daytimeline/DayTimeline';
+import { DayTimeline } from '../../src/DayTimeline/DayTimeline';
 import '../../src/index.css';
 import '../../src/App.css';
-import '../../src/Daytimeline/DayTimeline.css';
+import '../../src/DayTimeline/DayTimeline.css';
 
 const noop = () => void 0;
 const timeslotDefaultHeight = 60;

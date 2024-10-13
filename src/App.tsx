@@ -1,6 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import './App.css';
-import '../src/Daytimeline/DayTimeline.css';
-import { DayTimeline } from './Daytimeline/DayTimeline.tsx';
+import './DayTimeline/DayTimeline.css';
+import { DayTimeline } from './DayTimeline/DayTimeline.tsx';
 import { Component } from 'react';
 
 const today = new Date();
@@ -144,6 +146,7 @@ function App() {
                 />
             </div>
         );
+    // @ts-ignore
     return (
         <div className={'test-container'}>
             <DayTimeline

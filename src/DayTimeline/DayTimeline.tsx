@@ -6,11 +6,11 @@ import {
     SegmentedConfig,
     SegmentedPartConfig,
     TimeLabelsSettings,
-} from './DayTimeline.types.ts';
+} from './DayTimeline.types';
 import {
     DEFAULT_BUSINESS_END_HOUR,
     DEFAULT_BUSINESS_START_HOUR,
-} from './DayTimeline.constants.ts';
+} from './DayTimeline.constants';
 import React, {
     useCallback,
     useEffect,
@@ -18,26 +18,26 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import { NewPeriod } from './NewPeriod/NewPeriod.tsx';
+import { NewPeriod } from './NewPeriod/NewPeriod';
 import {
     addIntervalToHourRange,
     datePeriodToValuePeriod,
     getHourRange,
     parseDefaultPeriod,
     timeValuesToDatePeriod,
-} from '../utils/period.utils.ts';
-import { Period } from './Period/Period.tsx';
-import { CurrentTime } from './CurrentTime/CurrentTime.tsx';
+} from '../utils/period.utils';
+import { Period } from './Period/Period';
+import { CurrentTime } from './CurrentTime/CurrentTime';
 import {
     isDateInRange,
     isSameDate,
     roundToEndOfTheDay,
     roundToStartOfTheDay,
-} from '../utils/time.utils.ts';
-import { buildTimeLabel } from '../utils/format.utils.ts';
-import { SegmentedPeriod } from './SegmentedPeriod/SegmentedPeriod.tsx';
+} from '../utils/time.utils';
+import { buildTimeLabel } from '../utils/format.utils';
+import { SegmentedPeriod } from './SegmentedPeriod/SegmentedPeriod';
 
-interface Props {
+export interface Props {
     defaultSelected?: PeriodType | [number, number] | [string, string];
     onChange: (selected: PeriodType) => void;
     periods?: PeriodType[];

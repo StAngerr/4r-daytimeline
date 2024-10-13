@@ -1,4 +1,4 @@
-import { timeValueToTimeUnits } from './period.utils.ts';
+import { timeValueToTimeUnits } from './period.utils';
 
 export const hoursLeadingZero = (val: number) => (val < 10 ? '0' + val : val);
 

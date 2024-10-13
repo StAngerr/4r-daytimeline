@@ -2,13 +2,13 @@ import {
     BusinessHoursPeriod,
     Period,
     PeriodValues,
-} from '../Daytimeline/DayTimeline.types.ts';
+} from '../DayTimeline/DayTimeline.types';
 import {
     DEFAULT_BUSINESS_END_HOUR,
     DEFAULT_BUSINESS_START_HOUR,
     hours,
-} from '../Daytimeline/DayTimeline.constants.ts';
-import { isValidNumberTuple, isValidStringTuple } from './validation.utils.ts';
+} from '../DayTimeline/DayTimeline.constants';
+import { isValidNumberTuple, isValidStringTuple } from './validation.utils';
 
 export const minutesToTimeValue = (val: number) => val / 60;
 
