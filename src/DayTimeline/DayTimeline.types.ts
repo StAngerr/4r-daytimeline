@@ -17,7 +17,7 @@ export interface CurrentTimeSettings {
 }
 
 export interface TimeLabelsSettings {
-    component?: React.FunctionComponent;
+    component?: (hour: number) => React.ReactElement;
     position?: 'left' | 'right';
 }
 

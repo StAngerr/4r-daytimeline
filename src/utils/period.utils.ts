@@ -110,7 +110,7 @@ export const timeValuesToDatePeriod = (
 };
 
 export const getHourRange = (businessHours?: boolean | BusinessHoursPeriod) => {
-    if (typeof businessHours === 'boolean') {
+    if (typeof businessHours === 'boolean' && businessHours) {
         return hours.slice(
             DEFAULT_BUSINESS_START_HOUR,
             DEFAULT_BUSINESS_END_HOUR,
