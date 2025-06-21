@@ -3,9 +3,9 @@ import { DayTimeline, Period, BusinessHoursPeriod } from '../../../src';
 import { ExampleLayout } from '../common/ExampleLayout';
 
 const code = `
-    import { DayTimeline, Period, BusinessHoursPeriod } from '4r-daytimeline';
+    import { DayTimeline, Period, BusinessHoursPeriod } from 'day-timeline';
     
-    // Default business hours (9 AM to 5 PM)
+    // Use default business hours (9 AM to 5 PM)
     function DefaultBusinessHours() {
       const [selectedTime, setSelectedTime] = useState<Period | null>(null);
       
@@ -47,7 +47,7 @@ const code = `
       );
     }
     
-    // Full 24-hour timeline (business hours disabled)
+    // Full 24-hour timeline (no business hours)
     function FullDayTimeline() {
       const [selectedTime, setSelectedTime] = useState<Period | null>(null);
       

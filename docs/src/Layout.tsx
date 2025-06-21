@@ -85,7 +85,7 @@ export const Layout = () => {
                         </div>
                         <div className="pt-4 border-t mt-8">
                             <a
-                                href="https://github.com/StAngerr/4r-daytimeline"
+                                href="https://github.com/StAngerr/day-timeline"
                                 className="text-blue-600 hover:underline block py-2"
                                 target="_blank"
                                 rel="noopener noreferrer"

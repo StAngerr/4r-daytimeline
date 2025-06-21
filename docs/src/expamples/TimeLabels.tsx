@@ -52,122 +52,117 @@ const IconLabel = (hour: number) => {
 };
 
 const code = `
-    import { DayTimeline, Period } from '4r-daytimeline';
+    import { DayTimeline, Period } from 'day-timeline';
     
-    // Default time labels (24-hour format)
+    // Default 24-hour labels (left position)
     function DefaultLabels() {
-        const [selectedTime, setSelectedTime] = useState(null);
-        
-        return (
-            <DayTimeline
-                onChange={(period) => setSelectedTime(period)}
-                timeLabels={{
-                    position: 'left'
-                }}
-            />
-        );
+      const [selectedTime, setSelectedTime] = useState<Period | null>(null);
+      
+      return (
+        <DayTimeline
+          onChange={(period) => setSelectedTime(period)}
+          timeLabels={{
+            position: 'left'
+          }}
+        />
+      );
     }
     
-    // 12-hour format labels
+    // 12-hour format with AM/PM
     const TwelveHourLabel = (hour) => {
-        const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-        const period = hour < 12 ? 'AM' : 'PM';
-        return (
-            <div className="flex flex-col items-center">
-                <span className="text-sm font-semibold">{displayHour}</span>
-                <span className="text-xs text-gray-500">{period}</span>
-            </div>
-        );
+      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      const period = hour < 12 ? 'AM' : 'PM';
+      return (
+        <div className="time-label-12h">
+          <span className="hour">{displayHour}</span>
+          <span className="period">{period}</span>
+        </div>
+      );
     };
     
     function TwelveHourLabels() {
-        const [selectedTime, setSelectedTime] = useState(null);
-        
-        return (
-            <DayTimeline
-                onChange={(period) => setSelectedTime(period)}
-                timeLabels={{
-                    component: TwelveHourLabel,
-                    position: 'left'
-                }}
-            />
-        );
+      const [selectedTime, setSelectedTime] = useState<Period | null>(null);
+      
+      return (
+        <DayTimeline
+          onChange={(period) => setSelectedTime(period)}
+          timeLabels={{
+            component: TwelveHourLabel,
+            position: 'right'
+          }}
+        />
+      );
     }
     
-    // Minimal time labels
+    // Minimal numeric labels
     const MinimalLabel = (hour) => (
-        <span className="text-xs text-gray-500 font-mono">
-            {hour.toString().padStart(2, '0')}
-        </span>
+      <span className="text-xs text-gray-500 font-mono">
+        {hour.toString().padStart(2, '0')}
+      </span>
     );
     
     function MinimalLabels() {
-        const [selectedTime, setSelectedTime] = useState(null);
-        
-        return (
-            <DayTimeline
-                onChange={(period) => setSelectedTime(period)}
-                timeLabels={{
-                    component: MinimalLabel,
-                    position: 'right'
-                }}
-            />
-        );
+      const [selectedTime, setSelectedTime] = useState<Period | null>(null);
+      
+      return (
+        <DayTimeline
+          onChange={(period) => setSelectedTime(period)}
+          timeLabels={{
+            component: MinimalLabel
+          }}
+        />
+      );
     }
     
     // Detailed labels with time periods
-    const DetailedLabel = (hour) => (
-        <div className="flex flex-col items-center">
-            <span className="text-sm font-bold">{hour}:00</span>
-            <span className="text-xs text-gray-600">
-                {hour < 12 ? 'Morning' : hour < 17 ? 'Afternoon' : 'Evening'}
-            </span>
+    const DetailedLabel = (hour) => {
+      const period = hour < 12 ? 'Morning' : hour < 17 ? 'Afternoon' : 'Evening';
+      return (
+        <div className="detailed-label">
+          <span className="time">{hour}:00</span>
+          <span className="period">{period}</span>
         </div>
-    );
+      );
+    };
     
     function DetailedLabels() {
-        const [selectedTime, setSelectedTime] = useState(null);
-        
-        return (
-            <DayTimeline
-                onChange={(period) => setSelectedTime(period)}
-                timeLabels={{
-                    component: DetailedLabel,
-                    position: 'left'
-                }}
-            />
-        );
+      const [selectedTime, setSelectedTime] = useState<Period | null>(null);
+      
+      return (
+        <DayTimeline
+          onChange={(period) => setSelectedTime(period)}
+          timeLabels={{
+            component: DetailedLabel,
+            position: 'left'
+          }}
+        />
+      );
     }
     
-    // Icon-based labels
+    // Icon-based labels with sun/moon
     const IconLabel = (hour) => {
-        const getIcon = (hour) => {
-            if (hour >= 6 && hour < 12) return '🌅'; // Sunrise
-            if (hour >= 12 && hour < 18) return '☀️'; // Sun
-            if (hour >= 18 && hour < 22) return '🌆'; // Sunset
-            return '🌙'; // Night
-        };
-
-        return (
-            <div className="flex flex-col items-center">
-                <span className="text-lg">{getIcon(hour)}</span>
-                <span className="text-xs font-medium">{hour}:00</span>
-            </div>
-        );
+      const isDay = hour >= 6 && hour <= 18;
+      const icon = isDay ? '☀️' : '🌙';
+      return (
+        <div className="icon-label">
+          <span className="icon">{icon}</span>
+          <span className="time">{hour}:00</span>
+        </div>
+      );
     };
     
     function IconLabels() {
-        const [selectedTime, setSelectedTime] = useState(null);
-        
-        return (
-            <DayTimeline
-                onChange={(period) => setSelectedTime(period)}
-                timeLabels={{
-                    component: IconLabel,
-                    position: 'right'
-                }}
-            />
-        );
+      const [selectedTime, setSelectedTime] = useState<Period | null>(null);
+      
+      return (
+        <DayTimeline
+          onChange={(period) => setSelectedTime(period)}
+          timeLabels={{
+            component: IconLabel,
+            position: 'right'
+          }}
+        />
+      );
     }
 `;
 

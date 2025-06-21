@@ -1,34 +1,3 @@
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
-
 # DayTimeline Component
 
 A powerful React component for selecting and displaying time periods within a day, similar to Outlook's event creation interface. Built with TypeScript and designed for modern React applications.
@@ -50,15 +19,15 @@ A powerful React component for selecting and displaying time periods within a da
 ## Installation
 
 ```bash
-npm install 4r-daytimeline
+npm install day-timeline
 # or
-yarn add 4r-daytimeline
+yarn add day-timeline
 ```
 
 ## Basic Usage
 
 ```tsx
-import { DayTimeline, Period } from '4r-daytimeline';
+import { DayTimeline, Period } from 'day-timeline';
 
 function MyComponent() {
   const [selectedTime, setSelectedTime] = useState<Period | null>(null);
@@ -297,7 +266,7 @@ interface TimeLabelsSettings {
 
 Visit our interactive documentation to see all examples in action:
 
-**[📖 View Live Examples](https://4r-daytimeline.pages.dev)**
+**[📖 View Live Examples](https://day-timeline.pages.dev)**
 
 ### Available Examples:
 - **Base**: Basic timeline functionality

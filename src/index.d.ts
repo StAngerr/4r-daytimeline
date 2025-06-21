@@ -1,4 +1,4 @@
-declare module '4r-daytimeline' {
+declare module 'day-timeline' {
     export interface Period {
         startTime: string;
         endTime: string;

@@ -68,7 +68,7 @@ const getCrossDayPeriods = (): Period[] => {
 };
 
 const code = `
-    import { DayTimeline, Period } from '4r-daytimeline';
+    import { DayTimeline, Period } from 'day-timeline';
     
     // Helper function to create periods for today
     const createPeriodsForToday = (baseHour, duration, id) => {
@@ -308,4 +308,4 @@ export const Periods = () => {
             }
         />
     );
-}; 
+};

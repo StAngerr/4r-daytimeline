@@ -3,7 +3,7 @@ import { DayTimeline, Period } from '../../../src';
 import { ExampleLayout } from '../common/ExampleLayout';
 
 const code = `
-    import { DayTimeline, Period } from '4r-daytimeline';
+    import { DayTimeline, Period } from 'day-timeline';
     
     // Default 30-minute intervals
     function HalfHourIntervals() {

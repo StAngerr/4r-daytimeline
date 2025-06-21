@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
             root: 'docs',
             resolve: {
                 alias: {
-                    '4r-daytimeline': resolve(__dirname, 'src'),
+                    'day-timeline': resolve(__dirname, 'src'),
                 },
                 preserveSymlinks: false,
             },
@@ -32,8 +32,8 @@ export default defineConfig(({ mode }) => {
             copyPublicDir: false,
             lib: {
                 entry: resolve(__dirname, 'src/index.ts'),
-                name: '4r-daytimeline',
-                fileName: (format) => `4r-daytimeline.${format}.js`,
+                name: 'day-timeline',
+                fileName: (format) => `day-timeline.${format}.js`,
                 formats: ['es', 'umd'],
             },
             rollupOptions: {

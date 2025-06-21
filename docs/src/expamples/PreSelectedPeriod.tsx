@@ -3,7 +3,7 @@ import { DayTimeline, Period } from '../../../src';
 import { ExampleLayout } from '../common/ExampleLayout';
 
 const code = `
-    import { DayTimeline, Period } from '4r-daytimeline';
+    import { DayTimeline, Period } from 'day-timeline';
     
     // Create an initial time period from 10:00 AM to 11:30 AM
     const startTime = new Date();

@@ -3,7 +3,7 @@ import { DayTimeline, Period } from '../../../src';
 import { ExampleLayout } from '../common/ExampleLayout';
 
 const code = `
-    import { DayTimeline } from '4r-daytimeline';
+    import { DayTimeline } from 'day-timeline';
     
     <DayTimeline />
 
