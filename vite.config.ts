@@ -5,6 +5,7 @@ import { resolve } from 'path';
 export default defineConfig(({ mode }) => {
     if (mode === 'docs') {
         return {
+            base: '/day-timeline/',
             root: 'docs',
             resolve: {
                 alias: {

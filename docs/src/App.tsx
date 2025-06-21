@@ -13,7 +13,7 @@ import { Periods } from './expamples/Periods';
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename="/day-timeline">
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Base />} />

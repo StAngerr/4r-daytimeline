@@ -266,7 +266,7 @@ interface TimeLabelsSettings {
 
 Visit our interactive documentation to see all examples in action:
 
-**[📖 View Live Examples](https://day-timeline.pages.dev)**
+**[📖 View Live Examples](https://stangerr.github.io/day-timeline)**
 
 ### Available Examples:
 - **Base**: Basic timeline functionality
